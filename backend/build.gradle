@@ -1,9 +1,10 @@
 plugins {
-	id 'org.jetbrains.kotlin.jvm' version '1.9.25'
-	id 'org.jetbrains.kotlin.plugin.spring' version '1.9.25'
-	id 'org.springframework.boot' version '3.4.1'
-	id 'io.spring.dependency-management' version '1.1.7'
-	id 'org.jetbrains.kotlin.plugin.jpa' version '1.9.25'
+	// Kotlin and Spring Boot Plugins
+	id("org.jetbrains.kotlin.jvm") version "1.9.25"
+	id("org.jetbrains.kotlin.plugin.spring") version "1.9.25"
+	id("org.springframework.boot") version "3.4.1"
+	id("io.spring.dependency-management") version "1.1.7"
+	id("org.jetbrains.kotlin.plugin.jpa") version "1.9.25" // JPA support for Kotlin
 }
 
 group = 'com.chapterhive'
@@ -11,7 +12,7 @@ version = '0.0.1-SNAPSHOT'
 
 java {
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(17)
+		languageVersion = JavaLanguageVersion.of(17) // Java 17
 	}
 }
 
@@ -22,26 +23,37 @@ configurations {
 }
 
 repositories {
-	mavenCentral()
+	mavenCentral() // Central repository for dependencies
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
-	implementation 'org.jetbrains.kotlin:kotlin-reflect'
-	compileOnly 'org.projectlombok:lombok'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	runtimeOnly 'com.h2database:h2'
-	runtimeOnly 'org.postgresql:postgresql'
-	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.jetbrains.kotlin:kotlin-test-junit5'
-	testImplementation 'org.springframework.security:spring-security-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	// Spring Boot Starters
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa") // JPA for database interaction
+	implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server") // OAuth2 for security
+	implementation("org.springframework.boot:spring-boot-starter-security") // Spring Security
+	implementation("org.springframework.boot:spring-boot-starter-validation") // Validation
+	implementation("org.springframework.boot:spring-boot-starter-web") // Web layer (REST APIs)
+
+	// Kotlin Libraries
+	implementation("org.jetbrains.kotlin:kotlin-reflect") // Kotlin reflection
+	implementation("com.fasterxml.jackson.module:jackson-module-kotlin") // Jackson Kotlin module for JSON serialization/deserialization
+
+	// Development Tools
+	developmentOnly("org.springframework.boot:spring-boot-devtools") // Hot reloading during development
+
+	// Database Drivers
+	runtimeOnly("com.h2database:h2") // H2 in-memory database (for local development/testing)
+	runtimeOnly("org.postgresql:postgresql") // PostgreSQL driver
+
+	// Lombok
+	compileOnly("org.projectlombok:lombok") // Lombok (for Java code simplicity)
+	annotationProcessor("org.projectlombok:lombok") // Annotation processor for Lombok
+
+	// Test Dependencies
+	testImplementation("org.springframework.boot:spring-boot-starter-test") // Spring Boot testing support
+	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5") // JUnit 5 for Kotlin
+	testImplementation("org.springframework.security:spring-security-test") // Security test utilities
+	testRuntimeOnly("org.junit.platform:junit-platform-launcher") // JUnit test launcher
 }
 
 kotlin {
@@ -51,11 +63,11 @@ kotlin {
 }
 
 allOpen {
-	annotation 'jakarta.persistence.Entity'
+	annotation 'jakarta.persistence.Entity' // Open Kotlin classes for JPA
 	annotation 'jakarta.persistence.MappedSuperclass'
 	annotation 'jakarta.persistence.Embeddable'
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+	useJUnitPlatform() // Use JUnit Platform for testing
 }
