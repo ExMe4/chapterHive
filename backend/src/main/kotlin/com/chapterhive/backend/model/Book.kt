@@ -5,18 +5,14 @@ import java.util.*
 
 
 @Entity
-class Book {
+data class Book(
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    var id: UUID? = null
+    val id: UUID? = null,
 
-    var title: String? = null
-    private val author: String? = null
-    private val pages = 0
-    private val coverImage: String? = null
-
-    @Column(nullable = false)
-    private var averageRating = 0.0f
-
-    private val reviewCount = 0
-}
+    val title: String,
+    val author: String,
+    val pages: Int? = null,
+    val coverImage: String? = null,
+    val source: String = "local" // Can be "local" or "api"
+)
