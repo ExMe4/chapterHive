@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository
 import java.util.*
 
 @Repository
-interface ReviewRepository : JpaRepository<Review?, UUID?> {
-    fun findByBookId(bookId: UUID?): List<Review?>?
+interface ReviewRepository : JpaRepository<Review, UUID> {
+    fun findByBookId(bookId: UUID): List<Review>
 }
