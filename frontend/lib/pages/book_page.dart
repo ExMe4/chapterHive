@@ -11,7 +11,7 @@ class BookPage extends StatelessWidget {
   final bool isDarkMode;
 
   const BookPage({
-    Key? key,
+    super.key,
     required this.title,
     required this.author,
     required this.coverImage,
@@ -19,7 +19,7 @@ class BookPage extends StatelessWidget {
     required this.averageRating,
     required this.totalReviews,
     this.isDarkMode = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
