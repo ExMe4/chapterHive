@@ -6,7 +6,7 @@ void main() {
 }
 
 class ChapterHiveApp extends StatelessWidget {
-  const ChapterHiveApp({Key? key}) : super(key: key);
+  const ChapterHiveApp({super.key});
 
   @override
   Widget build(BuildContext context) {
