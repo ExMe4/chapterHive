@@ -14,5 +14,10 @@ data class Book(
     val author: String,
     val pages: Int? = null,
     val coverImage: String? = null,
-    val source: String = "local" // Can be "local" or "api"
+    val source: String = "local", // Can be "local" or "API"
+    val publicationYear: Int? = null,
+    val genre: String? = null,
+    val description: String? = null,
+    val publisher: String? = null,
+    val language: String? = null
 )

@@ -41,7 +41,8 @@ dependencies {
 	// Development Tools
 	developmentOnly("org.springframework.boot:spring-boot-devtools") // Hot reloading during development
 
-	// Database Drivers
+	// Database
+	implementation('org.postgresql:postgresql:42.7.2')
 	runtimeOnly("com.h2database:h2") // H2 in-memory database (for local development/testing)
 	runtimeOnly("org.postgresql:postgresql") // PostgreSQL driver
 
