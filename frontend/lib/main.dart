@@ -18,17 +18,17 @@ class ChapterHiveApp extends StatelessWidget {
       home: Scaffold(
         body: SafeArea(
           child: BookPage(
-            title: "The Great Gatsby",
-            author: "F. Scott Fitzgerald",
-            coverImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/The_Great_Gatsby_Cover_1925_Retouched.jpg/1024px-The_Great_Gatsby_Cover_1925_Retouched.jpg",
-            pages: 218,
+            title: "Trusting Was The Hardest Part (Hardest Part 2)",
+            author: "Rabia Doğan",
+            coverImage: "https://images.thalia.media/-/BF750-750/7d0b0eb48a6c4ad5bb22ed4ac7aa6182/trusting-was-the-hardest-part-hardest-part-2-taschenbuch-rabia-dogan.jpeg",
+            pages: 400,
             averageRating: 4.2,
             totalReviews: 1542,
-            publicationYear: 1925,
-            genre: "Classic, Fiction",
-            description: "A novel set in the Jazz Age, exploring themes of wealth, excess, and the elusive American Dream through the mysterious Jay Gatsby.",
-            publisher: "Charles Scribner's Sons",
-            language: "English",
+            publicationYear: 2024,
+            genre: "Fiction / Romance / Contemporary",
+            description: "Since Zelal moved to Berlin to study teaching, she has been torn between financial worries and the desire for independence. Without the support of her family, she is on her own. A light seems to emerge when she gets the job of student assistant to the newly hired postdoc Levi Jakab. But then something happens that Zelal never wanted to allow: The two of them begin to have forbidden tension. But Levi's hot-cold signals confuse Zelal until she realizes that he is hiding a secret - one that could cost him his job and throw Zelal back into her painful past.",
+            publisher: "Carlsen",
+            language: "German",
             isDarkMode: false, // Set dynamically based on user preference
           ),
         ),
