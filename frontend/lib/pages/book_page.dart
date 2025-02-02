@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import '../utils/strings.dart';
 
 class BookPage extends StatelessWidget {
   final String title;
@@ -41,7 +42,7 @@ class BookPage extends StatelessWidget {
       backgroundColor: backgroundColor,
       appBar: AppBar(
         title: Text(
-          'Book Details',
+          AppStrings.bookDetails,
           style: TextStyle(color: textColor),
         ),
         backgroundColor: backgroundColor,
@@ -51,9 +52,7 @@ class BookPage extends StatelessWidget {
       body: Center(
         child: SingleChildScrollView(
           child: ConstrainedBox(
-            constraints: BoxConstraints(
-              maxWidth: 800, // Limits the width for responsiveness
-            ),
+            constraints: const BoxConstraints(maxWidth: 800),
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -85,7 +84,7 @@ class BookPage extends StatelessWidget {
                           textAlign: TextAlign.center,
                         ),
                         Text(
-                          'by $author',
+                          '${AppStrings.byAuthor} $author',
                           style: TextStyle(
                             fontSize: 18,
                             fontStyle: FontStyle.italic,
@@ -102,10 +101,10 @@ class BookPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         if (publicationYear != null)
-                          _bookDetailItem("Publication Year", publicationYear.toString(), textColor),
-                        if (genre != null) _bookDetailItem("Genre", genre!, textColor),
-                        if (publisher != null) _bookDetailItem("Publisher", publisher!, textColor),
-                        if (language != null) _bookDetailItem("Language", language!, textColor),
+                          _bookDetailItem(AppStrings.publicationYear, publicationYear.toString(), textColor),
+                        if (genre != null) _bookDetailItem(AppStrings.genre, genre!, textColor),
+                        if (publisher != null) _bookDetailItem(AppStrings.publisher, publisher!, textColor),
+                        if (language != null) _bookDetailItem(AppStrings.language, language!, textColor),
                       ],
                     ),
                   const SizedBox(height: 16),
@@ -122,7 +121,7 @@ class BookPage extends StatelessWidget {
                     children: [
                       if (pages != null)
                         Text(
-                          '$pages pages',
+                          '$pages ${AppStrings.pages}',
                           style: TextStyle(fontSize: 16, color: textColor),
                         ),
                       Row(
@@ -135,7 +134,7 @@ class BookPage extends StatelessWidget {
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            '$averageRating ($totalReviews reviews)',
+                            '$averageRating ($totalReviews ${AppStrings.totalReviews})',
                             style: TextStyle(fontSize: 14, color: textColor),
                           ),
                         ],
@@ -145,7 +144,7 @@ class BookPage extends StatelessWidget {
                   const SizedBox(height: 24),
                   // Add a Review Section
                   Text(
-                    'Add Your Review',
+                    AppStrings.addYourReview,
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: textColor),
                   ),
                   const SizedBox(height: 12),
@@ -164,7 +163,7 @@ class BookPage extends StatelessWidget {
                   TextField(
                     maxLines: 4,
                     decoration: InputDecoration(
-                      hintText: 'Write your review...',
+                      hintText: AppStrings.writeReviewHint,
                       filled: true,
                       fillColor: isDarkMode ? Colors.grey[800] : Colors.grey[200],
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide.none),
@@ -181,7 +180,7 @@ class BookPage extends StatelessWidget {
                       foregroundColor: Colors.black,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
                     ),
-                    child: const Text('Submit Review'),
+                    child: Text(AppStrings.submitReview),
                   ),
                 ],
               ),
