@@ -20,6 +20,9 @@ class User {
     @Enumerated(EnumType.STRING)
     private val role: Role? = null
 
+    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
+    val readingProgress: List<ReadingProgress> = mutableListOf()
+
     enum class Role {
         ADMIN, USER
     }
