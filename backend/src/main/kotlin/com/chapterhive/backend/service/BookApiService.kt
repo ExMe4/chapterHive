@@ -30,6 +30,7 @@ class BookApiService(
             val volumeInfo = bookData["volumeInfo"] as? Map<String, Any> ?: emptyMap()
 
             Book(
+                googleBookId = bookData["id"] as? String,
                 title = volumeInfo["title"] as? String ?: "Unknown Title",
                 author = (volumeInfo["authors"] as? List<*>)?.filterIsInstance<String>()?.joinToString(", ") ?: "Unknown Author",
                 pages = volumeInfo["pageCount"] as? Int,

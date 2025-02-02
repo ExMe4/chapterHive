@@ -10,6 +10,8 @@ data class Book(
     @GeneratedValue(strategy = GenerationType.AUTO)
     val id: UUID? = null,
 
+    val googleBookId: String? = null,
+
     val title: String,
     val author: String,
     val pages: Int? = null,
