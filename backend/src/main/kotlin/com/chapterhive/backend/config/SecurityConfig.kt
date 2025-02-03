@@ -17,6 +17,7 @@ class SecurityConfig {
             .authorizeHttpRequests { auth ->
                 auth
                     // .requestMatchers("/api/reviews/**").permitAll()
+                    .requestMatchers("/api/auth/google-login").permitAll()
                     .anyRequest().permitAll() // permit all requests for now
             }
             .oauth2Login { oauth2 ->
