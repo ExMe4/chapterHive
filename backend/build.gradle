@@ -29,7 +29,6 @@ repositories {
 dependencies {
 	// Spring Boot Starters
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa") // JPA for database interaction
-	implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server") // OAuth2 for security
 	implementation("org.springframework.boot:spring-boot-starter-security") // Spring Security
 	implementation("org.springframework.boot:spring-boot-starter-validation") // Validation
 	implementation("org.springframework.boot:spring-boot-starter-web") // Web layer (REST APIs)
@@ -37,6 +36,10 @@ dependencies {
 	// Kotlin Libraries
 	implementation("org.jetbrains.kotlin:kotlin-reflect") // Kotlin reflection
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin") // Jackson Kotlin module for JSON serialization/deserialization
+
+	// OAuth2 dependency
+	implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+	implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server") // OAuth2 for security
 
 	// Development Tools
 	developmentOnly("org.springframework.boot:spring-boot-devtools") // Hot reloading during development
