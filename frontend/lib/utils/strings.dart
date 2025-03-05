@@ -5,7 +5,7 @@ class AppStrings {
   static const String genre = "Genre";
   static const String publisher = "Publisher";
   static const String language = "Language";
-  static const String pages = "pages";
+  static const String pages = "Pages";
   static const String averageRating = "Average Rating";
   static const String totalReviews = "reviews";
   static const String addYourReview = "Add Your Review";

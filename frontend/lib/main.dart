@@ -20,6 +20,7 @@ class ChapterHiveApp extends StatelessWidget {
           child: BookPage(
             title: "Trusting Was The Hardest Part (Hardest Part 2)",
             author: "Rabia Doğan",
+            authorImage: "https://www.carlsen.de/sites/default/files/styles/s_470_auto/public/autor/foto/urheber5394_0.jpg?itok=QW0opy03",
             coverImage: "https://images.thalia.media/-/BF750-750/7d0b0eb48a6c4ad5bb22ed4ac7aa6182/trusting-was-the-hardest-part-hardest-part-2-taschenbuch-rabia-dogan.jpeg",
             pages: 400,
             averageRating: 4.2,

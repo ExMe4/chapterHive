@@ -14,6 +14,7 @@ class BookPage extends StatelessWidget {
   final String? description;
   final String? publisher;
   final String? language;
+  final String? authorImage;
   final bool isDarkMode;
 
   const BookPage({
@@ -29,22 +30,21 @@ class BookPage extends StatelessWidget {
     this.description,
     this.publisher,
     this.language,
+    this.authorImage,
     this.isDarkMode = false,
   });
 
   @override
   Widget build(BuildContext context) {
     final backgroundColor = isDarkMode ? Colors.black : Colors.white;
+    final Color cardColor = (isDarkMode ? Colors.grey[900] : Colors.grey[200])!;
     final textColor = isDarkMode ? Colors.white : Colors.black;
-    const highlightColor = Color(0xFFFFD700); // Bumblebee yellow
+    const highlightColor = Color(0xFFFFD700);
 
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
-        title: Text(
-          AppStrings.bookDetails,
-          style: TextStyle(color: textColor),
-        ),
+        title: Text(AppStrings.bookDetails, style: TextStyle(color: textColor)),
         backgroundColor: backgroundColor,
         elevation: 0,
         iconTheme: IconThemeData(color: textColor),
@@ -58,130 +58,18 @@ class BookPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Center(
-                    child: Column(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(8.0),
-                          child: Image.network(
-                            coverImage,
-                            height: 300,
-                            width: 200,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return const Icon(Icons.broken_image, size: 80);
-                            },
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          title,
-                          style: TextStyle(
-                            fontSize: 26,
-                            fontWeight: FontWeight.bold,
-                            color: textColor,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        Text(
-                          '${AppStrings.byAuthor} $author',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontStyle: FontStyle.italic,
-                            color: textColor.withOpacity(0.7),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  // Book Details Section
-                  if (publicationYear != null || genre != null || publisher != null || language != null)
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (publicationYear != null)
-                          _bookDetailItem(AppStrings.publicationYear, publicationYear.toString(), textColor),
-                        if (genre != null) _bookDetailItem(AppStrings.genre, genre!, textColor),
-                        if (publisher != null) _bookDetailItem(AppStrings.publisher, publisher!, textColor),
-                        if (language != null) _bookDetailItem(AppStrings.language, language!, textColor),
-                      ],
-                    ),
-                  const SizedBox(height: 16),
-                  // Description
-                  if (description != null)
-                    Text(
-                      description!,
-                      style: TextStyle(fontSize: 16, color: textColor.withOpacity(0.9)),
-                    ),
-                  const SizedBox(height: 16),
-                  // Pages and Average Rating
+                  _buildBookHeader(cardColor, textColor),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if (pages != null)
-                        Text(
-                          '$pages ${AppStrings.pages}',
-                          style: TextStyle(fontSize: 16, color: textColor),
-                        ),
-                      Row(
-                        children: [
-                          RatingBarIndicator(
-                            rating: averageRating,
-                            itemBuilder: (context, index) => Icon(Icons.star, color: highlightColor),
-                            itemCount: 5,
-                            itemSize: 20,
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            '$averageRating ($totalReviews ${AppStrings.totalReviews})',
-                            style: TextStyle(fontSize: 14, color: textColor),
-                          ),
-                        ],
-                      ),
+                      Expanded(child: _buildAuthorCard(cardColor, textColor, highlightColor, context)),
+                      const SizedBox(width: 12),
+                      Expanded(child: _buildRatingCard(cardColor, textColor, highlightColor)),
                     ],
                   ),
-                  const SizedBox(height: 24),
-                  // Add a Review Section
-                  Text(
-                    AppStrings.addYourReview,
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: textColor),
-                  ),
-                  const SizedBox(height: 12),
-                  RatingBar.builder(
-                    initialRating: 0,
-                    minRating: 1,
-                    direction: Axis.horizontal,
-                    allowHalfRating: true,
-                    itemCount: 5,
-                    itemBuilder: (context, index) => const Icon(Icons.star, color: highlightColor),
-                    onRatingUpdate: (rating) {
-                      print('New Rating: $rating');
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  TextField(
-                    maxLines: 4,
-                    decoration: InputDecoration(
-                      hintText: AppStrings.writeReviewHint,
-                      filled: true,
-                      fillColor: isDarkMode ? Colors.grey[800] : Colors.grey[200],
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide.none),
-                    ),
-                    style: TextStyle(color: textColor),
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      print('Review submitted!');
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: highlightColor,
-                      foregroundColor: Colors.black,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-                    ),
-                    child: Text(AppStrings.submitReview),
-                  ),
+                  _buildDetailsCard(cardColor, textColor),
+                  if (description != null) _buildSynopsisCard(cardColor, textColor),
+                  _buildCommentSection(cardColor, textColor),
                 ],
               ),
             ),
@@ -191,10 +79,174 @@ class BookPage extends StatelessWidget {
     );
   }
 
+  Widget _buildBookHeader(Color cardColor, Color textColor) {
+    return Card(
+      color: cardColor,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8.0),
+              child: Image.network(
+                coverImage,
+                height: 300,
+                width: double.infinity,
+                fit: BoxFit.contain,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(title, style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: textColor)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCommentSection(Color cardColor, Color textColor) {
+    return Card(
+      color: cardColor,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("Comments", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: textColor)),
+            const SizedBox(height: 8),
+            TextField(
+              decoration: InputDecoration(
+                hintText: "Write a comment...",
+                hintStyle: TextStyle(color: textColor.withOpacity(0.6)),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+              ),
+            ),
+            const SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () {},
+              child: const Text("Post"),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRatingCard(Color cardColor, Color textColor, Color highlightColor) {
+    return Card(
+      color: cardColor,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(AppStrings.averageRating, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: textColor)),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Flexible(
+                  child: RatingBarIndicator(
+                    rating: averageRating,
+                    itemCount: 5,
+                    itemSize: 20,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) => Icon(Icons.star, color: highlightColor),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  averageRating.toString(),
+                  style: TextStyle(fontSize: 16, color: textColor),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text(
+              '($totalReviews reviews)',
+              style: TextStyle(fontSize: 16, color: textColor),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDetailsCard(Color cardColor, Color textColor) {
+    return Card(
+      color: cardColor,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (publicationYear != null) _bookDetailItem(AppStrings.publicationYear, publicationYear.toString(), textColor),
+            if (genre != null) _bookDetailItem(AppStrings.genre, genre!, textColor),
+            if (publisher != null) _bookDetailItem(AppStrings.publisher, publisher!, textColor),
+            if (language != null) _bookDetailItem(AppStrings.language, language!, textColor),
+            if (pages != null) _bookDetailItem(AppStrings.pages, '$pages', textColor),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSynopsisCard(Color cardColor, Color textColor) {
+    return Card(
+      color: cardColor,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Text(description!, style: TextStyle(fontSize: 16, color: textColor.withOpacity(0.9))),
+      ),
+    );
+  }
+
   Widget _bookDetailItem(String label, String value, Color textColor) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 6.0),
       child: Text('$label: $value', style: TextStyle(fontSize: 16, color: textColor.withOpacity(0.9))),
+    );
+  }
+
+  Widget _buildAuthorCard(Color cardColor, Color textColor, Color highlightColor, BuildContext context) {
+    return Card(
+      color: cardColor,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            if (authorImage != null)
+              ClipOval(
+                child: Image.network(
+                  authorImage!,
+                  height: 60,
+                  width: 60,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, '/authorPage', arguments: author);
+                },
+                child: Text(
+                  '${AppStrings.byAuthor} $author',
+                  style: TextStyle(fontSize: 16, color: highlightColor, decoration: TextDecoration.underline),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
