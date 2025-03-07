@@ -119,7 +119,7 @@ class BookPage extends StatelessWidget {
             TextField(
               decoration: InputDecoration(
                 hintText: "Write a comment...",
-                hintStyle: TextStyle(color: textColor.withOpacity(0.6)),
+                hintStyle: TextStyle(color: textColor.withAlpha((0.6 * 255).toInt())),
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
               ),
             ),
@@ -201,7 +201,7 @@ class BookPage extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Text(description!, style: TextStyle(fontSize: 16, color: textColor.withOpacity(0.9))),
+        child: Text(description!, style: TextStyle(fontSize: 16, color: textColor.withAlpha((0.9 * 255).toInt()))),
       ),
     );
   }
@@ -209,7 +209,7 @@ class BookPage extends StatelessWidget {
   Widget _bookDetailItem(String label, String value, Color textColor) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 6.0),
-      child: Text('$label: $value', style: TextStyle(fontSize: 16, color: textColor.withOpacity(0.9))),
+      child: Text('$label: $value', style: TextStyle(fontSize: 16, color: textColor.withAlpha((0.9 * 255).toInt()))),
     );
   }
 
