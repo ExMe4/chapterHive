@@ -62,9 +62,9 @@ class BookPage extends StatelessWidget {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(child: _buildAuthorCard(cardColor, textColor, highlightColor, context)),
-                      const SizedBox(width: 12),
                       Expanded(child: _buildRatingCard(cardColor, textColor, highlightColor)),
+                      const SizedBox(width: 12),
+                      Expanded(child: _buildAuthorCard(cardColor, textColor, highlightColor, context)),
                     ],
                   ),
                   _buildDetailsCard(cardColor, textColor),
@@ -105,35 +105,6 @@ class BookPage extends StatelessWidget {
     );
   }
 
-  Widget _buildCommentSection(Color cardColor, Color textColor) {
-    return Card(
-      color: cardColor,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("Comments", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: textColor)),
-            const SizedBox(height: 8),
-            TextField(
-              decoration: InputDecoration(
-                hintText: "Write a comment...",
-                hintStyle: TextStyle(color: textColor.withAlpha((0.6 * 255).toInt())),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-              ),
-            ),
-            const SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: () {},
-              child: const Text("Post"),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget _buildRatingCard(Color cardColor, Color textColor, Color highlightColor) {
     return Card(
       color: cardColor,
@@ -165,51 +136,13 @@ class BookPage extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              '($totalReviews reviews)',
+              '($totalReviews ${AppStrings.totalReviews})',
               style: TextStyle(fontSize: 16, color: textColor),
               overflow: TextOverflow.ellipsis,
             ),
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildDetailsCard(Color cardColor, Color textColor) {
-    return Card(
-      color: cardColor,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (publicationYear != null) _bookDetailItem(AppStrings.publicationYear, publicationYear.toString(), textColor),
-            if (genre != null) _bookDetailItem(AppStrings.genre, genre!, textColor),
-            if (publisher != null) _bookDetailItem(AppStrings.publisher, publisher!, textColor),
-            if (language != null) _bookDetailItem(AppStrings.language, language!, textColor),
-            if (pages != null) _bookDetailItem(AppStrings.pages, '$pages', textColor),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSynopsisCard(Color cardColor, Color textColor) {
-    return Card(
-      color: cardColor,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Text(description!, style: TextStyle(fontSize: 16, color: textColor.withAlpha((0.9 * 255).toInt()))),
-      ),
-    );
-  }
-
-  Widget _bookDetailItem(String label, String value, Color textColor) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 6.0),
-      child: Text('$label: $value', style: TextStyle(fontSize: 16, color: textColor.withAlpha((0.9 * 255).toInt()))),
     );
   }
 
@@ -243,6 +176,73 @@ class BookPage extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDetailsCard(Color cardColor, Color textColor) {
+    return Card(
+      color: cardColor,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (publicationYear != null) _bookDetailItem(AppStrings.publicationYear, publicationYear.toString(), textColor),
+            if (genre != null) _bookDetailItem(AppStrings.genre, genre!, textColor),
+            if (publisher != null) _bookDetailItem(AppStrings.publisher, publisher!, textColor),
+            if (language != null) _bookDetailItem(AppStrings.language, language!, textColor),
+            if (pages != null) _bookDetailItem(AppStrings.pages, '$pages', textColor),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _bookDetailItem(String label, String value, Color textColor) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6.0),
+      child: Text('$label: $value', style: TextStyle(fontSize: 16, color: textColor.withAlpha((0.9 * 255).toInt()))),
+    );
+  }
+
+  Widget _buildSynopsisCard(Color cardColor, Color textColor) {
+    return Card(
+      color: cardColor,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Text(description!, style: TextStyle(fontSize: 16, color: textColor.withAlpha((0.9 * 255).toInt()))),
+      ),
+    );
+  }
+
+  Widget _buildCommentSection(Color cardColor, Color textColor) {
+    return Card(
+      color: cardColor,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(AppStrings.addYourReview, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: textColor)),
+            const SizedBox(height: 8),
+            TextField(
+              decoration: InputDecoration(
+                hintText: AppStrings.writeReviewHint,
+                hintStyle: TextStyle(color: textColor.withAlpha((0.6 * 255).toInt())),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+              ),
+            ),
+            const SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () {},
+              child: const Text(AppStrings.post),
             ),
           ],
         ),

@@ -11,4 +11,5 @@ class AppStrings {
   static const String addYourReview = "Add Your Review";
   static const String writeReviewHint = "Write your review...";
   static const String submitReview = "Submit Review";
+  static const String post = "Post";
 }
