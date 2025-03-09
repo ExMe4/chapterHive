@@ -18,6 +18,8 @@ class BookPage extends StatelessWidget {
   final String? authorImage;
   final bool isDarkMode;
 
+  static const highlightColor = Color(0xFFFFD700);
+
   const BookPage({
     super.key,
     required this.title,
@@ -38,7 +40,6 @@ class BookPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textColor = Colors.white;
-    const highlightColor = Color(0xFFFFD700);
 
     return Scaffold(
       body: Stack(
@@ -74,7 +75,7 @@ class BookPage extends StatelessWidget {
                         children: [
                           Expanded(child: _buildRatingCard(textColor, highlightColor)),
                           const SizedBox(width: 12),
-                          Expanded(child: _buildAuthorCard(textColor, highlightColor, context)),
+                          Expanded(child: _buildAuthorCard(textColor, context)),
                         ],
                       ),
                       _buildDetailsCard(textColor),
@@ -106,7 +107,7 @@ class BookPage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          Text(title, style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: textColor)),
+          Text(title, textAlign: TextAlign.center, style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: textColor)),
         ],
       ),
     );
@@ -117,15 +118,13 @@ class BookPage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(AppStrings.averageRating, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: textColor)),
-          const SizedBox(height: 8),
           Row(
             children: [
               Flexible(
                 child: RatingBarIndicator(
                   rating: averageRating,
                   itemCount: 5,
-                  itemSize: 20,
+                  itemSize: 18,
                   physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) => Icon(Icons.star, color: highlightColor),
                 ),
@@ -133,7 +132,7 @@ class BookPage extends StatelessWidget {
               const SizedBox(width: 8),
               Text(
                 averageRating.toString(),
-                style: TextStyle(fontSize: 16, color: textColor),
+                style: TextStyle(fontSize: 16, color: textColor, fontWeight: FontWeight.bold),
               ),
             ],
           ),
@@ -148,37 +147,44 @@ class BookPage extends StatelessWidget {
     );
   }
 
-  Widget _buildAuthorCard(Color textColor, Color highlightColor, BuildContext context) {
+  Widget _buildAuthorCard(Color textColor, BuildContext context) {
     return _buildCard(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          if (authorImage != null)
-            ClipOval(
-              child: Image.network(
-                authorImage!,
-                height: 60,
-                width: 60,
-                fit: BoxFit.cover,
-              ),
-            ),
-          const SizedBox(width: 12),
           Expanded(
             child: GestureDetector(
               onTap: () {
                 Navigator.pushNamed(context, '/authorPage', arguments: author);
               },
               child: Text(
-                '${AppStrings.byAuthor} $author',
-                style: TextStyle(fontSize: 16, color: highlightColor, decoration: TextDecoration.underline),
+                author,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: highlightColor,
+                ),
+                maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
             ),
           ),
+          if (authorImage != null) ...[
+            const SizedBox(width: 12),
+            ClipOval(
+              child: Image.network(
+                authorImage!,
+                height: 50,
+                width: 50,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ],
         ],
       ),
     );
   }
+
 
   Widget _buildDetailsCard(Color textColor) {
     return _buildCard(
