@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import '../utils/strings.dart';
 
-class BookPage extends StatelessWidget {
+class BookPage extends StatefulWidget {
   final String title;
   final String author;
   final String coverImage;
@@ -38,28 +38,37 @@ class BookPage extends StatelessWidget {
   });
 
   @override
+  _BookPageState createState() => _BookPageState();
+}
+
+class _BookPageState extends State<BookPage> {
+  bool showDetailsList = false;
+
+  void _toggleDetails() {
+    setState(() {
+      showDetailsList = !showDetailsList;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final textColor = Colors.white;
 
     return Scaffold(
       body: Stack(
         children: [
-          // Background image
           Positioned.fill(
             child: Image.network(
-              coverImage,
+              widget.coverImage,
               fit: BoxFit.cover,
+              width: double.infinity,
+              height: double.infinity,
             ),
           ),
-          Positioned.fill(
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-              child: Container(
-                color: Colors.white.withAlpha((0.15 * 255).toInt()),
-              ),
-            ),
+          BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: Container(color: Colors.black.withAlpha((0.5 * 255).toInt())),
           ),
-          // Content
           Center(
             child: SingleChildScrollView(
               child: ConstrainedBox(
@@ -70,16 +79,14 @@ class BookPage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildBookHeader(textColor),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(child: _buildRatingCard(textColor, highlightColor)),
-                          const SizedBox(width: 12),
-                          Expanded(child: _buildAuthorCard(textColor, context)),
-                        ],
+                      _buildInfoSection(textColor),
+                      GestureDetector(
+                        onTap: _toggleDetails,
+                        child: showDetailsList
+                            ? _buildDetailsList(textColor)
+                            : _buildDetailsGrid(textColor),
                       ),
-                      _buildDetailsCard(textColor),
-                      if (description != null) _buildSynopsisCard(textColor),
+                      if (widget.description != null) _buildSynopsisCard(textColor),
                       _buildCommentSection(textColor),
                     ],
                   ),
@@ -95,59 +102,55 @@ class BookPage extends StatelessWidget {
   Widget _buildBookHeader(Color textColor) {
     return _buildCard(
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(8.0),
-            child: Image.network(
-              coverImage,
-              height: 300,
-              width: double.infinity,
-              fit: BoxFit.contain,
-            ),
+            child: Image.network(widget.coverImage, height: 300, fit: BoxFit.contain),
           ),
           const SizedBox(height: 12),
-          Text(title, textAlign: TextAlign.center, style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: textColor)),
+          Text(widget.title, textAlign: TextAlign.center, style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: textColor)),
         ],
       ),
+    );
+  }
+
+  Widget _buildInfoSection(Color textColor) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(child: _buildRatingCard(textColor, BookPage.highlightColor)),
+        const SizedBox(width: 12),
+        Expanded(child: _buildAuthorCard(textColor)),
+      ],
     );
   }
 
   Widget _buildRatingCard(Color textColor, Color highlightColor) {
     return _buildCard(
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Flexible(
-                child: RatingBarIndicator(
-                  rating: averageRating,
-                  itemCount: 5,
-                  itemSize: 18,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) => Icon(Icons.star, color: highlightColor),
-                ),
+              RatingBarIndicator(
+                rating: widget.averageRating,
+                itemCount: 5,
+                itemSize: 16,
+                itemBuilder: (context, index) => Icon(Icons.star, color: highlightColor),
               ),
               const SizedBox(width: 8),
-              Text(
-                averageRating.toString(),
-                style: TextStyle(fontSize: 16, color: textColor, fontWeight: FontWeight.bold),
-              ),
+              Text(widget.averageRating.toString(), style: TextStyle(fontSize: 16, color: textColor, fontWeight: FontWeight.bold)),
             ],
           ),
           const SizedBox(height: 8),
-          Text(
-            '($totalReviews ${AppStrings.totalReviews})',
-            style: TextStyle(fontSize: 16, color: textColor),
-            overflow: TextOverflow.ellipsis,
-          ),
+          Text('(${widget.totalReviews} ${AppStrings.totalReviews})', style: TextStyle(fontSize: 16, color: textColor)),
         ],
       ),
     );
   }
 
-  Widget _buildAuthorCard(Color textColor, BuildContext context) {
+  Widget _buildAuthorCard(Color textColor) {
     return _buildCard(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -155,29 +158,15 @@ class BookPage extends StatelessWidget {
           Expanded(
             child: GestureDetector(
               onTap: () {
-                Navigator.pushNamed(context, '/authorPage', arguments: author);
+                Navigator.pushNamed(context, '/authorPage', arguments: widget.author);
               },
-              child: Text(
-                author,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: highlightColor,
-                ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
+              child: Text(widget.author, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: BookPage.highlightColor)),
             ),
           ),
-          if (authorImage != null) ...[
+          if (widget.authorImage != null) ...[
             const SizedBox(width: 12),
             ClipOval(
-              child: Image.network(
-                authorImage!,
-                height: 50,
-                width: 50,
-                fit: BoxFit.cover,
-              ),
+              child: Image.network(widget.authorImage!, height: 50, width: 50, fit: BoxFit.cover),
             ),
           ],
         ],
@@ -185,17 +174,39 @@ class BookPage extends StatelessWidget {
     );
   }
 
+  Widget _buildDetailsGrid(Color textColor) {
+    return _buildGridBackgroundCard(
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(child: _buildGridCard(widget.publicationYear?.toString() ?? "-", textColor, "Year")),
+              const SizedBox(width: 8),
+              Expanded(child: _buildGridCard(_getLanguageFlag(), textColor, "", showOnlyFlag: true)),
+              const SizedBox(width: 8),
+              Expanded(child: _buildGridCard(widget.publisher ?? "-", textColor, "Publisher")),
+            ],
+          ),
+          const SizedBox(height: 12),
+          _buildGridCard(widget.genre ?? "-", textColor, "Genre", isWide: true),
+          const SizedBox(height: 12),
+          _buildGridCard("${widget.pages ?? '-'} ${AppStrings.pages}", textColor, "Pages"),
+        ],
+      ),
+    );
+  }
 
-  Widget _buildDetailsCard(Color textColor) {
+  Widget _buildDetailsList(Color textColor) {
     return _buildCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (publicationYear != null) _bookDetailItem(AppStrings.publicationYear, publicationYear.toString(), textColor),
-          if (genre != null) _bookDetailItem(AppStrings.genre, genre!, textColor),
-          if (publisher != null) _bookDetailItem(AppStrings.publisher, publisher!, textColor),
-          if (language != null) _bookDetailItem(AppStrings.language, language!, textColor),
-          if (pages != null) _bookDetailItem(AppStrings.pages, '$pages', textColor),
+          _bookDetailItem("Publication Year", widget.publicationYear?.toString() ?? "-", textColor),
+          _bookDetailItem("Language", widget.language ?? "-", textColor),
+          _bookDetailItem("Publisher", widget.publisher ?? "-", textColor),
+          _bookDetailItem("Genre", widget.genre ?? "-", textColor),
+          _bookDetailItem("Pages", widget.pages?.toString() ?? "-", textColor),
         ],
       ),
     );
@@ -204,13 +215,16 @@ class BookPage extends StatelessWidget {
   Widget _bookDetailItem(String label, String value, Color textColor) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 6.0),
-      child: Text('$label: $value', style: TextStyle(fontSize: 16, color: textColor.withAlpha((0.9 * 255).toInt()))),
+      child: Text(
+        '$label: $value',
+        style: TextStyle(fontSize: 16, color: textColor.withAlpha((0.9 * 255).toInt())),
+      ),
     );
   }
 
   Widget _buildSynopsisCard(Color textColor) {
     return _buildCard(
-      child: Text(description!, style: TextStyle(fontSize: 16, color: textColor.withAlpha((0.9 * 255).toInt()))),
+      child: Text(widget.description!, style: TextStyle(fontSize: 16, color: textColor.withAlpha((0.9 * 255).toInt()))),
     );
   }
 
@@ -223,18 +237,52 @@ class BookPage extends StatelessWidget {
           const SizedBox(height: 8),
           TextField(
             decoration: InputDecoration(
-                hintText: AppStrings.writeReviewHint,
-                hintStyle: TextStyle(color: textColor.withAlpha((0.6 * 255).toInt())),
+              hintText: AppStrings.writeReviewHint,
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-            )
-          ),
-          const SizedBox(height: 10),
-          ElevatedButton(
-            onPressed: () {},
-            child: const Text(AppStrings.post),
+            ),
           ),
         ],
       ),
+    );
+  }
+
+  String _getLanguageFlag() {
+    switch (widget.language?.toLowerCase()) {
+      case "english":
+        return "🇬🇧";
+      case "german":
+        return "🇩🇪";
+      case "french":
+        return "🇫🇷";
+      default:
+        return "🌍";
+    }
+  }
+
+  Widget _buildGridCard(String value, Color textColor, String label, {bool isWide = false, bool showOnlyFlag = false}) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 0),
+      width: isWide ? double.infinity : null,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.black.withAlpha((0.45 * 255).toInt()),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Center(
+        child: Text(
+          showOnlyFlag ? value : value,
+          style: TextStyle(fontSize: 16, color: textColor),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildGridBackgroundCard({required Widget child}) {
+    return Card(
+      elevation: 0,
+      color: Colors.transparent,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: child,
     );
   }
 
@@ -242,10 +290,7 @@ class BookPage extends StatelessWidget {
     return Card(
       color: Colors.black.withAlpha((0.25 * 255).toInt()),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: child,
-      ),
+      child: Padding(padding: const EdgeInsets.all(16.0), child: child),
     );
   }
 }
