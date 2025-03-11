@@ -43,6 +43,7 @@ class BookPage extends StatefulWidget {
 
 class _BookPageState extends State<BookPage> {
   bool showDetailsList = false;
+  bool _isExpanded = false;
 
   void _toggleDetails() {
     setState(() {
@@ -80,12 +81,14 @@ class _BookPageState extends State<BookPage> {
                     children: [
                       _buildBookHeader(textColor),
                       _buildInfoSection(textColor),
+                      _buildLineSeparator(),
                       GestureDetector(
                         onTap: _toggleDetails,
                         child: showDetailsList
                             ? _buildDetailsList(textColor)
                             : _buildDetailsGrid(textColor),
                       ),
+                      _buildLineSeparator(),
                       if (widget.description != null) _buildSynopsisCard(textColor),
                       _buildCommentSection(textColor),
                     ],
@@ -128,69 +131,76 @@ class _BookPageState extends State<BookPage> {
 
   Widget _buildRatingCard(Color textColor, Color highlightColor) {
     return _buildCard(
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              RatingBarIndicator(
-                rating: widget.averageRating,
-                itemCount: 5,
-                itemSize: 16,
-                itemBuilder: (context, index) => Icon(Icons.star, color: highlightColor),
-              ),
-              const SizedBox(width: 8),
-              Text(widget.averageRating.toString(), style: TextStyle(fontSize: 16, color: textColor, fontWeight: FontWeight.bold)),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Text('(${widget.totalReviews} ${AppStrings.totalReviews})', style: TextStyle(fontSize: 16, color: textColor)),
-        ],
+      child: Container(
+        height: 60,
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                RatingBarIndicator(
+                  rating: widget.averageRating,
+                  itemCount: 5,
+                  itemSize: 16,
+                  itemBuilder: (context, index) => Icon(Icons.star, color: highlightColor),
+                ),
+                const SizedBox(width: 8),
+                Text(widget.averageRating.toString(), style: TextStyle(fontSize: 16, color: textColor, fontWeight: FontWeight.bold)),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text('(${widget.totalReviews} ${AppStrings.totalReviews})', style: TextStyle(fontSize: 16, color: textColor)),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildAuthorCard(Color textColor) {
     return _buildCard(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Expanded(
-            child: GestureDetector(
-              onTap: () {
-                Navigator.pushNamed(context, '/authorPage', arguments: widget.author);
-              },
-              child: Text(widget.author, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: BookPage.highlightColor)),
+      child: Container(
+        height: 60,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, '/authorPage', arguments: widget.author);
+                },
+                child: Text(widget.author, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: BookPage.highlightColor)),
+              ),
             ),
-          ),
-          if (widget.authorImage != null) ...[
-            const SizedBox(width: 12),
-            ClipOval(
-              child: Image.network(widget.authorImage!, height: 50, width: 50, fit: BoxFit.cover),
-            ),
+            if (widget.authorImage != null) ...[
+              const SizedBox(width: 12),
+              ClipOval(
+                child: Image.network(widget.authorImage!, height: 50, width: 50, fit: BoxFit.cover),
+              ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }
 
   Widget _buildDetailsGrid(Color textColor) {
-    return _buildGridBackgroundCard(
+    return Padding(
+      padding: const EdgeInsets.only(left: 4, right: 4),
       child: Column(
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Expanded(child: _buildGridCard(widget.publicationYear?.toString() ?? "-", textColor, "Year")),
-              const SizedBox(width: 8),
-              Expanded(child: _buildGridCard(_getLanguageFlag(), textColor, "", showOnlyFlag: true)),
-              const SizedBox(width: 8),
-              Expanded(child: _buildGridCard(widget.publisher ?? "-", textColor, "Publisher")),
+              Flexible(flex: 3, child: _buildGridCard(widget.publicationYear?.toString() ?? "-", textColor, "Year")),
+              const SizedBox(width: 12), // Increased spacing
+              Flexible(flex: 2, child: _buildGridCard(_getLanguageFlag(), textColor, "", showOnlyFlag: true)),
+              const SizedBox(width: 12),
+              Flexible(flex: 3, child: _buildGridCard(widget.publisher ?? "-", textColor, "Publisher")),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
           _buildGridCard(widget.genre ?? "-", textColor, "Genre", isWide: true),
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
           _buildGridCard("${widget.pages ?? '-'} ${AppStrings.pages}", textColor, "Pages"),
         ],
       ),
@@ -202,6 +212,17 @@ class _BookPageState extends State<BookPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Text(
+            "Details",
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: textColor,
+            ),
+          ),
+          const SizedBox(height: 6),
+          _bookDetailItem("Title", widget.title, textColor),
+          _bookDetailItem("Author", widget.author, textColor),
           _bookDetailItem("Publication Year", widget.publicationYear?.toString() ?? "-", textColor),
           _bookDetailItem("Language", widget.language ?? "-", textColor),
           _bookDetailItem("Publisher", widget.publisher ?? "-", textColor),
@@ -215,16 +236,92 @@ class _BookPageState extends State<BookPage> {
   Widget _bookDetailItem(String label, String value, Color textColor) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 6.0),
-      child: Text(
-        '$label: $value',
-        style: TextStyle(fontSize: 16, color: textColor.withAlpha((0.9 * 255).toInt())),
+      child: RichText(
+        text: TextSpan(
+          style: TextStyle(fontSize: 16, color: textColor.withAlpha((0.9 * 255).toInt())),
+          children: [
+            TextSpan(
+              text: "$label: ",
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            TextSpan(text: value),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildSynopsisCard(Color textColor) {
     return _buildCard(
-      child: Text(widget.description!, style: TextStyle(fontSize: 16, color: textColor.withAlpha((0.9 * 255).toInt()))),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Synopsis",
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: textColor,
+            ),
+          ),
+          const SizedBox(height: 6),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final textSpan = TextSpan(
+                text: widget.description!,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontStyle: FontStyle.italic,
+                  color: textColor.withAlpha((0.9 * 255).toInt()),
+                ),
+              );
+
+              final textPainter = TextPainter(
+                text: textSpan,
+                maxLines: 5,
+                textDirection: TextDirection.ltr,
+              );
+
+              textPainter.layout(maxWidth: constraints.maxWidth);
+
+              final isOverflowing = textPainter.didExceedMaxLines;
+
+              return Column(
+                children: [
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    child: Text(
+                      widget.description!,
+                      maxLines: _isExpanded ? null : 5,
+                      overflow: _isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontStyle: FontStyle.italic,
+                        color: textColor.withAlpha((0.9 * 255).toInt()),
+                      ),
+                    ),
+                  ),
+                  if (isOverflowing)
+                    TextButton(
+                      onPressed: () {
+                        setState(() {
+                          _isExpanded = !_isExpanded;
+                        });
+                      },
+                      child: Text(
+                        _isExpanded ? "Read less" : "Read more",
+                        style: TextStyle(
+                          color: BookPage.highlightColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                ],
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 
@@ -259,10 +356,22 @@ class _BookPageState extends State<BookPage> {
     }
   }
 
+  Widget _buildLineSeparator() {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 20),
+      height: 8, // Adjust thickness if needed
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: BookPage.highlightColor.withAlpha((0.60 * 255).toInt()),
+        borderRadius: BorderRadius.circular(4),
+      ),
+    );
+  }
+
   Widget _buildGridCard(String value, Color textColor, String label, {bool isWide = false, bool showOnlyFlag = false}) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 0),
-      width: isWide ? double.infinity : null,
+      constraints: const BoxConstraints(minWidth: double.infinity),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.black.withAlpha((0.45 * 255).toInt()),
@@ -274,15 +383,6 @@ class _BookPageState extends State<BookPage> {
           style: TextStyle(fontSize: 16, color: textColor),
         ),
       ),
-    );
-  }
-
-  Widget _buildGridBackgroundCard({required Widget child}) {
-    return Card(
-      elevation: 0,
-      color: Colors.transparent,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: child,
     );
   }
 
