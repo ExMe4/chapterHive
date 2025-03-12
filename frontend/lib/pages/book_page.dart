@@ -131,7 +131,7 @@ class _BookPageState extends State<BookPage> {
 
   Widget _buildRatingCard(Color textColor, Color highlightColor) {
     return _buildCard(
-      child: Container(
+      child: SizedBox(
         height: 60,
         child: Column(
           children: [
@@ -158,7 +158,7 @@ class _BookPageState extends State<BookPage> {
 
   Widget _buildAuthorCard(Color textColor) {
     return _buildCard(
-      child: Container(
+      child: SizedBox(
         height: 60,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -192,7 +192,7 @@ class _BookPageState extends State<BookPage> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Flexible(flex: 3, child: _buildGridCard(widget.publicationYear?.toString() ?? "-", textColor, "Year")),
-              const SizedBox(width: 12), // Increased spacing
+              const SizedBox(width: 12),
               Flexible(flex: 2, child: _buildGridCard(_getLanguageFlag(), textColor, "", showOnlyFlag: true)),
               const SizedBox(width: 12),
               Flexible(flex: 3, child: _buildGridCard(widget.publisher ?? "-", textColor, "Publisher")),
@@ -213,7 +213,7 @@ class _BookPageState extends State<BookPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Details",
+            AppStrings.bookDetails,
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -221,13 +221,13 @@ class _BookPageState extends State<BookPage> {
             ),
           ),
           const SizedBox(height: 6),
-          _bookDetailItem("Title", widget.title, textColor),
-          _bookDetailItem("Author", widget.author, textColor),
-          _bookDetailItem("Publication Year", widget.publicationYear?.toString() ?? "-", textColor),
-          _bookDetailItem("Language", widget.language ?? "-", textColor),
-          _bookDetailItem("Publisher", widget.publisher ?? "-", textColor),
-          _bookDetailItem("Genre", widget.genre ?? "-", textColor),
-          _bookDetailItem("Pages", widget.pages?.toString() ?? "-", textColor),
+          _bookDetailItem(AppStrings.title, widget.title, textColor),
+          _bookDetailItem(AppStrings.author, widget.author, textColor),
+          _bookDetailItem(AppStrings.publicationYear, widget.publicationYear?.toString() ?? "-", textColor),
+          _bookDetailItem(AppStrings.language, widget.language ?? "-", textColor),
+          _bookDetailItem(AppStrings.publisher, widget.publisher ?? "-", textColor),
+          _bookDetailItem(AppStrings.genre, widget.genre ?? "-", textColor),
+          _bookDetailItem(AppStrings.pages, widget.pages?.toString() ?? "-", textColor),
         ],
       ),
     );
@@ -257,7 +257,7 @@ class _BookPageState extends State<BookPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Synopsis",
+            AppStrings.synopsis,
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -309,7 +309,7 @@ class _BookPageState extends State<BookPage> {
                         });
                       },
                       child: Text(
-                        _isExpanded ? "Read less" : "Read more",
+                        _isExpanded ? AppStrings.readLess : AppStrings.readMore,
                         style: TextStyle(
                           color: BookPage.highlightColor,
                           fontWeight: FontWeight.bold,
@@ -359,7 +359,7 @@ class _BookPageState extends State<BookPage> {
   Widget _buildLineSeparator() {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 20),
-      height: 8, // Adjust thickness if needed
+      height: 8,
       width: double.infinity,
       decoration: BoxDecoration(
         color: BookPage.highlightColor.withAlpha((0.60 * 255).toInt()),
