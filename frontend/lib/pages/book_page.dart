@@ -166,15 +166,34 @@ class _BookPageState extends State<BookPage> {
             Expanded(
               child: GestureDetector(
                 onTap: () {
-                  Navigator.pushNamed(context, '/authorPage', arguments: widget.author);
+                  Navigator.pushNamed(
+                    context,
+                    '/authorPage',
+                    arguments: {
+                      'name': widget.author,
+                      'image': widget.authorImage,
+                    },
+                  );
                 },
-                child: Text(widget.author, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: BookPage.highlightColor)),
+                child: Text(
+                  widget.author,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: BookPage.highlightColor,
+                  ),
+                ),
               ),
             ),
             if (widget.authorImage != null) ...[
               const SizedBox(width: 12),
               ClipOval(
-                child: Image.network(widget.authorImage!, height: 50, width: 50, fit: BoxFit.cover),
+                child: Image.network(
+                  widget.authorImage!,
+                  height: 50,
+                  width: 50,
+                  fit: BoxFit.cover,
+                ),
               ),
             ],
           ],

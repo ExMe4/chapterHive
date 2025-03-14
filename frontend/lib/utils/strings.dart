@@ -16,4 +16,5 @@ class AppStrings {
   static const String readLess = "Read less";
   static const String readMore = "Read more";
   static const String synopsis = "Synopsis";
+  static const String unknown = "Unknown";
 }
