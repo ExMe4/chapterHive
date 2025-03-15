@@ -5,10 +5,11 @@ plugins {
 	id("org.springframework.boot") version "3.4.1"
 	id("io.spring.dependency-management") version "1.1.7"
 	id("org.jetbrains.kotlin.plugin.jpa") version "1.9.25" // JPA support for Kotlin
+	id("org.jetbrains.kotlin.kapt") version "1.9.25" // Enable annotation processing
 }
 
-group = 'com.chapterhive'
-version = '0.0.1-SNAPSHOT'
+group = "com.chapterhive"
+version = "0.0.1-SNAPSHOT"
 
 java {
 	toolchain {
@@ -18,7 +19,7 @@ java {
 
 configurations {
 	compileOnly {
-		extendsFrom annotationProcessor
+		extendsFrom(annotationProcessor)
 	}
 }
 
@@ -28,6 +29,7 @@ repositories {
 
 dependencies {
 	// Spring Boot Starters
+	implementation("org.springframework.boot:spring-boot-starter")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa") // JPA for database interaction
 	implementation("org.springframework.boot:spring-boot-starter-security") // Spring Security
 	implementation("org.springframework.boot:spring-boot-starter-validation") // Validation
@@ -54,16 +56,23 @@ dependencies {
 	developmentOnly("org.springframework.boot:spring-boot-devtools") // Hot reloading during development
 
 	// Database
-	implementation('org.postgresql:postgresql:42.7.2')
+	implementation("org.postgresql:postgresql:42.7.2")
 	runtimeOnly("com.h2database:h2") // H2 in-memory database (for local development/testing)
 	runtimeOnly("org.postgresql:postgresql") // PostgreSQL driver
 
-	// Lombok
-	compileOnly("org.projectlombok:lombok") // Lombok (for Java code simplicity)
-	annotationProcessor("org.projectlombok:lombok") // Annotation processor for Lombok
+	// Lombok (requires KAPT)
+	compileOnly("org.projectlombok:lombok")
+	kapt("org.projectlombok:lombok") // Use KAPT instead of annotationProcessor
+
+	// JPA Model Generation
+	kapt("org.hibernate.orm:hibernate-jpamodelgen:6.3.1.Final")
 
 	// Gson
 	implementation("com.google.http-client:google-http-client-gson:1.43.3")
+
+	// Logging
+	implementation("org.slf4j:slf4j-api:2.0.9")
+	implementation("ch.qos.logback:logback-classic:1.4.14")
 
 	// Test Dependencies
 	testImplementation("org.springframework.boot:spring-boot-starter-test") // Spring Boot testing support
@@ -72,18 +81,12 @@ dependencies {
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher") // JUnit test launcher
 }
 
-kotlin {
-	compilerOptions {
-		freeCompilerArgs.addAll '-Xjsr305=strict'
-	}
-}
-
 allOpen {
-	annotation 'jakarta.persistence.Entity' // Open Kotlin classes for JPA
-	annotation 'jakarta.persistence.MappedSuperclass'
-	annotation 'jakarta.persistence.Embeddable'
+	annotation("jakarta.persistence.Entity") // Open Kotlin classes for JPA
+	annotation("jakarta.persistence.MappedSuperclass")
+	annotation("jakarta.persistence.Embeddable")
 }
 
-tasks.named('test') {
+tasks.named("test") {
 	useJUnitPlatform() // Use JUnit Platform for testing
 }
