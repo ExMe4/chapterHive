@@ -22,7 +22,10 @@ data class User(
     val role: Role = Role.USER, // Default role is USER
 
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
-    val readingProgress: List<ReadingProgress> = mutableListOf()
+    val readingProgress: List<ReadingProgress> = mutableListOf(),
+
+    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
+    val reviews: List<Review> = mutableListOf()
 ) {
     enum class Role {
         ADMIN, USER
