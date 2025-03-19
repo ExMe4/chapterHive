@@ -15,18 +15,22 @@ class BookController(
 
     @GetMapping("/{title}")
     fun getBookByTitle(@PathVariable title: String): ResponseEntity<Book> {
-        // Check if book exists in the database by Google Book ID
-        val apiBook = bookApiService.fetchBookDetails(title)
+        // Check database
+        val localBook = bookRepository.findByTitleIgnoreCase(title)
+        if (localBook != null) {
+            return ResponseEntity.ok(localBook)
+        }
 
+        // If not found, fetch from Google Books API
+        val apiBook = bookApiService.fetchBookDetails(title)
         if (apiBook != null) {
             val existingBook = bookRepository.findByGoogleBookId(apiBook.googleBookId!!)
             if (existingBook != null) {
-                return ResponseEntity.ok(existingBook) // Return existing book if found
+                return ResponseEntity.ok(existingBook) // ✅ Return if already stored
             }
 
-            // If book is not found, save it to DB
-            bookRepository.save(apiBook)
-            return ResponseEntity.ok(apiBook)
+            val savedBook = bookRepository.save(apiBook.copy(source = "api"))
+            return ResponseEntity.ok(savedBook)
         }
 
         return ResponseEntity.notFound().build()

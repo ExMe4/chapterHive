@@ -8,7 +8,7 @@ import org.springframework.web.util.UriComponentsBuilder
 
 @Service
 class BookApiService(
-    private val restTemplate: RestTemplate // ✅ Now Spring injects RestTemplate
+    private val restTemplate: RestTemplate
 ) {
     private val apiUrl = "https://www.googleapis.com/books/v1/volumes"
 
@@ -17,30 +17,31 @@ class BookApiService(
 
     fun fetchBookDetails(title: String): Book? {
         val uri = UriComponentsBuilder
-            .fromUriString(apiUrl) // ✅ Fixes deprecated method
+            .fromUriString(apiUrl)
             .queryParam("q", title)
             .queryParam("key", apiKey)
             .build()
             .toUriString()
 
         val response = restTemplate.getForEntity(uri, Map::class.java)
-        val items = response.body?.get("items") as? List<Map<String, Any>> ?: return null
+        val body = response.body ?: return null
 
-        return items.firstOrNull()?.let { bookData ->
-            val volumeInfo = bookData["volumeInfo"] as? Map<String, Any> ?: emptyMap()
+        val items = (body["items"] as? List<*>)?.filterIsInstance<Map<String, Any>>() ?: return null
+        val bookData = items.firstOrNull() ?: return null
+        val volumeInfo = (bookData["volumeInfo"] as? Map<*, *>)?.mapKeys { it.key.toString() } ?: emptyMap()
 
-            Book(
-                googleBookId = bookData["id"] as? String,
-                title = volumeInfo["title"] as? String ?: "Unknown Title",
-                author = (volumeInfo["authors"] as? List<*>)?.filterIsInstance<String>()?.joinToString(", ") ?: "Unknown Author",
-                pages = volumeInfo["pageCount"] as? Int,
-                coverImage = (volumeInfo["imageLinks"] as? Map<*, *>)?.get("thumbnail") as? String,
-                publicationYear = (volumeInfo["publishedDate"] as? String)?.take(4)?.toIntOrNull(),
-                genre = (volumeInfo["categories"] as? List<*>)?.filterIsInstance<String>()?.joinToString(", "),
-                description = volumeInfo["description"] as? String,
-                publisher = volumeInfo["publisher"] as? String,
-                language = volumeInfo["language"] as? String
-            )
-        }
+        return Book(
+            googleBookId = bookData["id"] as? String,
+            title = volumeInfo["title"] as? String ?: "Unknown Title",
+            author = (volumeInfo["authors"] as? List<*>)?.filterIsInstance<String>()?.joinToString(", ") ?: "Unknown Author",
+            pages = volumeInfo["pageCount"] as? Int,
+            coverImage = (volumeInfo["imageLinks"] as? Map<*, *>)?.get("thumbnail") as? String ?: "",
+            publicationYear = (volumeInfo["publishedDate"] as? String)?.take(4)?.toIntOrNull(),
+            genre = (volumeInfo["categories"] as? List<*>)?.filterIsInstance<String>()?.joinToString(", "),
+            description = volumeInfo["description"] as? String,
+            publisher = volumeInfo["publisher"] as? String,
+            language = volumeInfo["language"] as? String,
+            source = "api" // API-fetched books
+        )
     }
 }
