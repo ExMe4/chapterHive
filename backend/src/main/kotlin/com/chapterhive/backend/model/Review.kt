@@ -1,7 +1,6 @@
 package com.chapterhive.backend.model
 
 import jakarta.persistence.*
-import java.time.LocalDateTime
 import java.util.*
 
 @Entity
@@ -14,7 +13,10 @@ data class Review(
     @JoinColumn(name = "book_id", nullable = false)
     val book: Book,
 
-    val userId: UUID? = null,
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    val user: User,
+
     val rating: Int, // 1 to 5 stars
     val comment: String? = null,
 )
