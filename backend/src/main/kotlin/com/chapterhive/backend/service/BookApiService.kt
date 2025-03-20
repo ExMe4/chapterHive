@@ -1,6 +1,7 @@
 package com.chapterhive.backend.service
 
 import com.chapterhive.backend.model.Book
+import com.chapterhive.backend.repository.BookRepository
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
@@ -8,14 +9,28 @@ import org.springframework.web.util.UriComponentsBuilder
 
 @Service
 class BookApiService(
-    private val restTemplate: RestTemplate
+    private val restTemplate: RestTemplate,
+    private val bookRepository: BookRepository // Inject repository to save API results
 ) {
     private val apiUrl = "https://www.googleapis.com/books/v1/volumes"
 
     @Value("\${google.books.api.key}")
     private lateinit var apiKey: String
 
-    fun fetchBookDetails(title: String): Book? {
+    fun getBook(title: String): Book? {
+        // Check the local database
+        val localBook = bookRepository.findByTitleIgnoreCase(title)
+        if (localBook != null) {
+            return localBook
+        }
+
+        // Fetch from Google Books API if not found locally
+        val apiBook = fetchBookFromApi(title) ?: return null
+
+        return bookRepository.save(apiBook)
+    }
+
+    private fun fetchBookFromApi(title: String): Book? {
         val uri = UriComponentsBuilder
             .fromUriString(apiUrl)
             .queryParam("q", title)
