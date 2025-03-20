@@ -3,11 +3,15 @@ package com.chapterhive.backend.controller
 import com.chapterhive.backend.model.User
 import com.chapterhive.backend.repository.UserRepository
 import com.chapterhive.backend.security.JwtTokenProvider
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import java.util.*
 
+@Tag(name = "Users", description = "User profile management endpoints")
 @RestController
 @RequestMapping("/api/users")
 class UserController(
@@ -16,9 +20,10 @@ class UserController(
 ) {
 
     @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Get user profile", description = "Retrieves the user profile based on user ID")
     @GetMapping("/{userId}")
     fun getUserProfile(
-        @PathVariable userId: UUID,
+        @Parameter(description = "User ID of the profile to fetch") @PathVariable userId: UUID,
         @RequestHeader("Authorization") token: String
     ): ResponseEntity<User> {
         val email = jwtTokenProvider.getEmailFromToken(token.substring(7))
@@ -32,9 +37,10 @@ class UserController(
     }
 
     @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Update user profile", description = "Allows a user to update their profile details")
     @PutMapping("/{userId}")
     fun updateUserProfile(
-        @PathVariable userId: UUID,
+        @Parameter(description = "User ID of the profile to update") @PathVariable userId: UUID,
         @RequestBody updatedUser: User,
         @RequestHeader("Authorization") token: String
     ): ResponseEntity<User> {
@@ -52,8 +58,11 @@ class UserController(
         return ResponseEntity.ok(userRepository.save(updatedProfile))
     }
 
+    @Operation(summary = "Get reading progress", description = "Fetches a list of books the user is currently reading")
     @GetMapping("/{userId}/progress")
-    fun getReadingProgress(@PathVariable userId: UUID): ResponseEntity<List<String>> {
+    fun getReadingProgress(
+        @Parameter(description = "User ID to fetch reading progress") @PathVariable userId: UUID
+    ): ResponseEntity<List<String>> {
         val user = userRepository.findById(userId)
         return if (user.isPresent) {
             ResponseEntity.ok(user.get().readingProgress.map { it.book.title })
