@@ -2,34 +2,54 @@ package com.chapterhive.backend.controller
 
 import com.chapterhive.backend.model.User
 import com.chapterhive.backend.repository.UserRepository
+import com.chapterhive.backend.security.JwtTokenProvider
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import java.util.*
 
 @RestController
 @RequestMapping("/api/users")
 class UserController(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val jwtTokenProvider: JwtTokenProvider
 ) {
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/{userId}")
-    fun getUserProfile(@PathVariable userId: UUID): ResponseEntity<User> {
-        val user = userRepository.findById(userId)
-        return if (user.isPresent) ResponseEntity.ok(user.get()) else ResponseEntity.notFound().build()
-    }
+    fun getUserProfile(
+        @PathVariable userId: UUID,
+        @RequestHeader("Authorization") token: String
+    ): ResponseEntity<User> {
+        val email = jwtTokenProvider.getEmailFromToken(token.substring(7))
+        val user = userRepository.findByEmail(email) ?: return ResponseEntity.status(403).build()
 
-    @PutMapping("/{userId}")
-    fun updateUserProfile(@PathVariable userId: UUID, @RequestBody updatedUser: User): ResponseEntity<User> {
-        val existingUser = userRepository.findById(userId)
-        if (existingUser.isEmpty) {
-            return ResponseEntity.notFound().build()
+        if (user.id != userId && user.role != User.Role.ADMIN) {
+            return ResponseEntity.status(403).build()
         }
 
-        val userToUpdate = existingUser.get().copy(
+        return ResponseEntity.ok(user)
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PutMapping("/{userId}")
+    fun updateUserProfile(
+        @PathVariable userId: UUID,
+        @RequestBody updatedUser: User,
+        @RequestHeader("Authorization") token: String
+    ): ResponseEntity<User> {
+        val email = jwtTokenProvider.getEmailFromToken(token.substring(7))
+        val user = userRepository.findByEmail(email) ?: return ResponseEntity.status(403).build()
+
+        if (user.id != userId) {
+            return ResponseEntity.status(403).build()
+        }
+
+        val updatedProfile = user.copy(
             username = updatedUser.username,
             profilePicture = updatedUser.profilePicture
         )
-        return ResponseEntity.ok(userRepository.save(userToUpdate))
+        return ResponseEntity.ok(userRepository.save(updatedProfile))
     }
 
     @GetMapping("/{userId}/progress")

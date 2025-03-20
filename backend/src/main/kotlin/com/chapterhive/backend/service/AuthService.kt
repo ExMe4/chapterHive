@@ -10,7 +10,12 @@ class AuthService(private val userRepository: UserRepository) {
     fun findOrCreateUser(email: String, username: String?, profilePicture: String?): User {
         val existingUser = userRepository.findByEmail(email)
         return existingUser ?: userRepository.save(
-            User(email = email, username = username, profilePicture = profilePicture)
+            User(
+                email = email,
+                username = username,
+                profilePicture = profilePicture,
+                role = User.Role.USER // Default to USER role
+            )
         )
     }
 }

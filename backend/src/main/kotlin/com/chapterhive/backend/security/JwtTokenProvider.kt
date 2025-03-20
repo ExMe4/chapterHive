@@ -1,5 +1,6 @@
 package com.chapterhive.backend.security
 
+import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
@@ -21,6 +22,19 @@ class JwtTokenProvider(
         return Keys.hmacShaKeyFor(keyBytes)
     }
 
+    fun generateToken(email: String, role: String): String {
+        val now = Date()
+        val expiryDate = Date(now.time + jwtExpirationMs)
+
+        return Jwts.builder()
+            .setSubject(email)
+            .claim("role", role)
+            .setIssuedAt(now)
+            .setExpiration(expiryDate)
+            .signWith(getSigningKey())
+            .compact()
+    }
+
     fun validateToken(token: String): Boolean {
         return try {
             Jwts.parserBuilder()
@@ -34,15 +48,24 @@ class JwtTokenProvider(
         }
     }
 
-    fun generateToken(email: String): String {
-        val now = Date()
-        val expiryDate = Date(now.time + jwtExpirationMs)
+    fun getEmailFromToken(token: String): String {
+        return getClaimsFromToken(token).subject
+    }
 
-        return Jwts.builder()
-            .setSubject(email)
-            .setIssuedAt(now)
-            .setExpiration(expiryDate)
-            .signWith(getSigningKey())
-            .compact()
+    fun getRoleFromToken(token: String): String {
+        val claims = Jwts.parserBuilder()
+            .setSigningKey(getSigningKey())
+            .build()
+            .parseClaimsJws(token)
+            .body
+        return claims["role"] as String
+    }
+
+    private fun getClaimsFromToken(token: String): Claims {
+        return Jwts.parserBuilder()
+            .setSigningKey(getSigningKey())
+            .build()
+            .parseClaimsJws(token)
+            .body
     }
 }
