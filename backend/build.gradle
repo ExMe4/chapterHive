@@ -13,7 +13,7 @@ version = "0.0.1-SNAPSHOT"
 
 java {
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(17) // Java 17
+		languageVersion = JavaLanguageVersion.of(17)
 	}
 }
 
@@ -24,7 +24,7 @@ configurations {
 }
 
 repositories {
-	mavenCentral() // Central repository for dependencies
+	mavenCentral()
 }
 
 dependencies {
@@ -91,5 +91,5 @@ allOpen {
 }
 
 tasks.named("test") {
-	useJUnitPlatform() // Use JUnit Platform for testing
+	useJUnitPlatform()
 }
