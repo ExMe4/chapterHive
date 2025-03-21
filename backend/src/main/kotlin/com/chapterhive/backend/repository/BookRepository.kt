@@ -12,4 +12,6 @@ interface BookRepository : JpaRepository<Book?, UUID?> {
     fun findByTitleIgnoreCase(title: String): Book?
 
     fun findByGoogleBookId(googleBookId: String): Book?
+
+    fun findByTitleContainingIgnoreCase(title: String): List<Book>
 }
