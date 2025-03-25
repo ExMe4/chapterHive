@@ -18,9 +18,7 @@ class _ExplorePageState extends State<ExplorePage> {
 
   Future<void> _searchBooks(String query) async {
     if (query.isEmpty) {
-      setState(() {
-        _books = [];
-      });
+      setState(() => _books = []);
       return;
     }
 
@@ -32,10 +30,7 @@ class _ExplorePageState extends State<ExplorePage> {
     if (response.statusCode == 200) {
       final utf8DecodedData = utf8.decode(response.bodyBytes);
       final data = jsonDecode(utf8DecodedData);
-
-      setState(() {
-        _books = data['books'] ?? [];
-      });
+      setState(() => _books = data['books'] ?? []);
     } else {
       print("Error fetching books: ${response.body}");
     }
@@ -51,7 +46,7 @@ class _ExplorePageState extends State<ExplorePage> {
         child: Column(
           children: [
             _buildSearchBar(),
-            if (_books.isNotEmpty) _buildDropdownResults(),
+            if (_books.isNotEmpty) Expanded(child: _buildResultsCard()),
           ],
         ),
       ),
@@ -91,28 +86,67 @@ class _ExplorePageState extends State<ExplorePage> {
     );
   }
 
-  Widget _buildDropdownResults() {
-    return Expanded(
-      child: ListView.builder(
-        itemCount: _books.length,
-        itemBuilder: (context, index) {
-          final book = _books[index];
-          return Card(
-            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
-            elevation: 4,
-            child: ListTile(
-              leading: book['thumbnail'] != null && book['thumbnail'].isNotEmpty
-                  ? Image.network(book['thumbnail'], width: 50, height: 50, fit: BoxFit.cover)
-                  : const Icon(Icons.book, size: 50),
-              title: Text(book['title'], style: const TextStyle(fontSize: 16)),
-              subtitle: Text(
-                "${AppStrings.byAuthor} ${book['authors'].join(", ")}",
-                style: const TextStyle(color: Colors.black54),
-              ),
-              onTap: () => _navigateToBookPage(book),
+  Widget _buildResultsCard() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Material(
+        elevation: 5,
+        borderRadius: BorderRadius.circular(12),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.black,
+              borderRadius: BorderRadius.circular(12),
             ),
-          );
-        },
+            child: SingleChildScrollView(
+              child: Column(
+                children: _books.asMap().entries.map((entry) {
+                  return Column(
+                    children: [
+                      _buildBookItem(entry.value),
+                      if (entry.key != _books.length - 1) _buildLineSeparator(),
+                    ],
+                  );
+                }).toList(),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBookItem(dynamic book) {
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      leading: book['thumbnail'] != null && book['thumbnail'].isNotEmpty
+          ? Image.network(book['thumbnail'], width: 50, height: 50, fit: BoxFit.cover)
+          : const Icon(Icons.book, size: 50),
+      title: Text(
+        book['title'],
+        style: const TextStyle(fontSize: 16, color: Colors.white),
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+      ),
+      subtitle: Text(
+        "${AppStrings.byAuthor} ${book['authors'].join(", ")}",
+        style: const TextStyle(fontStyle: FontStyle.italic, color: Colors.white70),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
+      onTap: () => _navigateToBookPage(book),
+    );
+  }
+
+  Widget _buildLineSeparator() {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 5),
+      height: 4,
+      width: 300,
+      decoration: BoxDecoration(
+        color: BookPage.highlightColor.withAlpha((0.60 * 255).toInt()),
+        borderRadius: BorderRadius.circular(2),
       ),
     );
   }
