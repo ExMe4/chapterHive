@@ -10,7 +10,7 @@ import org.springframework.web.util.UriComponentsBuilder
 @Service
 class BookApiService(
     private val restTemplate: RestTemplate,
-    private val bookRepository: BookRepository // Inject repository to save API results
+    private val bookRepository: BookRepository
 ) {
     private val apiUrl = "https://www.googleapis.com/books/v1/volumes"
 
@@ -24,7 +24,7 @@ class BookApiService(
             return localBook
         }
 
-        // Fetch from Google Books API if not found locally
+        // Fetch from Google Books API
         val apiBook = fetchBookFromApi(title) ?: return null
 
         return bookRepository.save(apiBook)
@@ -45,18 +45,22 @@ class BookApiService(
         val bookData = items.firstOrNull() ?: return null
         val volumeInfo = (bookData["volumeInfo"] as? Map<*, *>)?.mapKeys { it.key.toString() } ?: emptyMap()
 
+        val isbnList = (volumeInfo["industryIdentifiers"] as? List<Map<String, String>>)
+            ?.mapNotNull { it["identifier"] } ?: emptyList()
+
         return Book(
             googleBookId = bookData["id"] as? String,
             title = volumeInfo["title"] as? String ?: "Unknown Title",
-            author = (volumeInfo["authors"] as? List<*>)?.filterIsInstance<String>()?.joinToString(", ") ?: "Unknown Author",
+            author = (volumeInfo["authors"] as? List<*>)?.joinToString(", ") ?: "Unknown Author",
             pages = volumeInfo["pageCount"] as? Int,
             coverImage = (volumeInfo["imageLinks"] as? Map<*, *>)?.get("thumbnail") as? String ?: "",
             publicationYear = (volumeInfo["publishedDate"] as? String)?.take(4)?.toIntOrNull(),
-            genre = (volumeInfo["categories"] as? List<*>)?.filterIsInstance<String>()?.joinToString(", "),
+            genre = (volumeInfo["categories"] as? List<*>)?.joinToString(", "),
             description = volumeInfo["description"] as? String,
             publisher = volumeInfo["publisher"] as? String,
             language = volumeInfo["language"] as? String,
-            source = "api" // API-fetched books
+            isbnList = isbnList,
+            source = "api"
         )
     }
 }

@@ -20,7 +20,9 @@ data class Book(
     val genre: String? = null,
     val description: String? = null,
     val publisher: String? = null,
-    val language: String? = null
+    val language: String? = null,
+    @ElementCollection
+    val isbnList: List<String> = emptyList()
 ) {
     fun toResponse() = BookResponse(
         title = title,

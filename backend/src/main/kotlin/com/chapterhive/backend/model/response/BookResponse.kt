@@ -10,5 +10,6 @@ data class BookResponse(
     val publisher: String,
     val genre: String,
     val pages: Int,
-    val source: String
+    val source: String,
+    val isbnList: List<String> = emptyList()
 )
