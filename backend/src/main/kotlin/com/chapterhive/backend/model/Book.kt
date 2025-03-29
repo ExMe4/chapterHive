@@ -1,8 +1,8 @@
 package com.chapterhive.backend.model
 
+import com.chapterhive.backend.model.response.BookResponse
 import jakarta.persistence.*
 import java.util.*
-
 
 @Entity
 data class Book(
@@ -11,7 +11,6 @@ data class Book(
     val id: UUID? = null,
 
     val googleBookId: String? = null,
-
     val title: String,
     val author: String,
     val pages: Int? = null,
@@ -22,4 +21,17 @@ data class Book(
     val description: String? = null,
     val publisher: String? = null,
     val language: String? = null
-)
+) {
+    fun toResponse() = BookResponse(
+        title = title,
+        author = author,
+        description = description ?: "",
+        coverImage = coverImage ?: "",
+        publicationYear = publicationYear,
+        language = language ?: "Unknown",
+        publisher = publisher ?: "Unknown",
+        genre = genre ?: "Unknown",
+        pages = pages ?: 0,
+        source = source
+    )
+}

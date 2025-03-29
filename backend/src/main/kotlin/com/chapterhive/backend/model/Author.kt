@@ -1,5 +1,6 @@
 package com.chapterhive.backend.model
 
+import com.chapterhive.backend.model.response.AuthorResponse
 import jakarta.persistence.*
 
 @Entity
@@ -15,4 +16,10 @@ data class Author(
     val bio: String? = null,
 
     val profileImageUrl: String? = null
-)
+) {
+    fun toResponse() = AuthorResponse(
+        name = name,
+        bio = bio ?: "",
+        profileImageUrl = profileImageUrl ?: ""
+    )
+}
