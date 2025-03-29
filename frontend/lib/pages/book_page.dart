@@ -220,7 +220,7 @@ class _BookPageState extends State<BookPage> {
           const SizedBox(height: 10),
           _buildGridCard(widget.genre ?? "-", textColor, "Genre", isWide: true),
           const SizedBox(height: 10),
-          _buildGridCard("${widget.pages ?? '-'} ${AppStrings.pages}", textColor, "Pages"),
+          _buildGridCard(widget.pages == 0 ? AppStrings.pageNumberUnknown : "${widget.pages} ${AppStrings.pages}", textColor, "Pages")
         ],
       ),
     );

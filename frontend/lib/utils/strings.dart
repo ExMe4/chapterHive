@@ -18,4 +18,5 @@ class AppStrings {
   static const String synopsis = "Synopsis";
   static const String unknown = "Unknown";
   static const String searchBoxHint = "Search books, authors...";
+  static const String pageNumberUnknown = "Page number unknown";
 }

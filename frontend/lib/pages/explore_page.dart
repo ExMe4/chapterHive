@@ -118,19 +118,35 @@ class _ExplorePageState extends State<ExplorePage> {
   }
 
   Widget _buildBookItem(dynamic book) {
+    List<String> authors = (book['author'] != null)
+        ? [book['author']]
+        : ["Unknown Author"];
+
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      leading: book['thumbnail'] != null && book['thumbnail'].isNotEmpty
-          ? Image.network(book['thumbnail'], width: 50, height: 50, fit: BoxFit.cover)
+      leading: book['coverImage'] != null && book['coverImage'].isNotEmpty
+          ? Image.network(
+        book['coverImage'],
+        width: 50,
+        height: 50,
+        fit: BoxFit.cover,
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) {
+            return child;
+          } else {
+            return const CircularProgressIndicator();
+          }
+        },
+      )
           : const Icon(Icons.book, size: 50),
       title: Text(
-        book['title'],
+        book['title'] ?? "Unknown Title",
         style: const TextStyle(fontSize: 16, color: Colors.white),
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
       ),
       subtitle: Text(
-        "${AppStrings.byAuthor} ${book['authors'].join(", ")}",
+        "${AppStrings.byAuthor} ${authors.join(", ")}",
         style: const TextStyle(fontStyle: FontStyle.italic, color: Colors.white70),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
@@ -138,6 +154,7 @@ class _ExplorePageState extends State<ExplorePage> {
       onTap: () => _navigateToBookPage(book),
     );
   }
+
 
   Widget _buildLineSeparator() {
     return Container(
@@ -152,14 +169,16 @@ class _ExplorePageState extends State<ExplorePage> {
   }
 
   void _navigateToBookPage(dynamic book) {
+    String authorText = book['author'] ?? "Unknown Author";
+
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => BookPage(
-          title: book['title'],
-          author: book['authors'].join(", "),
+          title: book['title'] ?? "Unknown Title",
+          author: authorText,
           authorImage: book['authorImage'],
-          coverImage: book['thumbnail'] ?? '',
+          coverImage: book['coverImage'] ?? '',
           pages: book['pages'],
           averageRating: book['averageRating']?.toDouble() ?? 0.0,
           totalReviews: book['totalReviews'] ?? 0,
