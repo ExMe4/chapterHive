@@ -243,7 +243,7 @@ class _BookPageState extends State<BookPage> {
           _bookDetailItem(AppStrings.title, widget.title, textColor),
           _bookDetailItem(AppStrings.author, widget.author, textColor),
           _bookDetailItem(AppStrings.publicationYear, widget.publicationYear?.toString() ?? "-", textColor),
-          _bookDetailItem(AppStrings.language, widget.language ?? "-", textColor),
+          _bookDetailItem(AppStrings.language, _getLanguageName(), textColor),
           _bookDetailItem(AppStrings.publisher, widget.publisher ?? "-", textColor),
           _bookDetailItem(AppStrings.genre, widget.genre ?? "-", textColor),
           _bookDetailItem(AppStrings.pages, widget.pages?.toString() ?? "-", textColor),
@@ -363,17 +363,127 @@ class _BookPageState extends State<BookPage> {
   }
 
   String _getLanguageFlag() {
-    switch (widget.language?.toLowerCase()) {
-      case "english":
-        return "🇬🇧";
-      case "german":
-        return "🇩🇪";
-      case "french":
-        return "🇫🇷";
-      default:
-        return "🌍";
+    String? langCode = widget.language?.toLowerCase().substring(0, 2);
+
+    switch (langCode) {
+      case "en": return "🇬🇧"; // English
+      case "zh": return "🇨🇳"; // Chinese
+      case "es": return "🇪🇸"; // Spanish
+      case "fr": return "🇫🇷"; // French
+      case "de": return "🇩🇪"; // German
+      case "ar": return "🇸🇦"; // Arabic
+      case "ru": return "🇷🇺"; // Russian
+      case "pt": return "🇵🇹"; // Portuguese
+      case "ja": return "🇯🇵"; // Japanese
+      case "it": return "🇮🇹"; // Italian
+      case "hi": return "🇮🇳"; // Hindi
+      case "bn": return "🇧🇩"; // Bengali
+      case "pa": return "🇮🇳"; // Punjabi
+      case "nl": return "🇳🇱"; // Dutch
+      case "tr": return "🇹🇷"; // Turkish
+      case "vi": return "🇻🇳"; // Vietnamese
+      case "pl": return "🇵🇱"; // Polish
+      case "sv": return "🇸🇪"; // Swedish
+      case "ko": return "🇰🇷"; // Korean
+      case "th": return "🇹🇭"; // Thai
+      case "he": return "🇮🇱"; // Hebrew
+      case "uk": return "🇺🇦"; // Ukrainian
+      case "id": return "🇮🇩"; // Indonesian
+      case "ro": return "🇷🇴"; // Romanian
+      case "fa": return "🇮🇷"; // Persian (Farsi)
+      case "cs": return "🇨🇿"; // Czech
+      case "el": return "🇬🇷"; // Greek
+      case "fi": return "🇫🇮"; // Finnish
+      case "hu": return "🇭🇺"; // Hungarian
+      case "da": return "🇩🇰"; // Danish
+      case "no": return "🇳🇴"; // Norwegian
+      case "bg": return "🇧🇬"; // Bulgarian
+      case "ms": return "🇲🇾"; // Malay
+      case "sr": return "🇷🇸"; // Serbian
+      case "lt": return "🇱🇹"; // Lithuanian
+      case "sk": return "🇸🇰"; // Slovak
+      case "hr": return "🇭🇷"; // Croatian
+      case "sl": return "🇸🇮"; // Slovenian
+      case "ca": return "🇪🇸"; // Catalan
+      case "eu": return "🇪🇸"; // Basque
+      case "gl": return "🇪🇸"; // Galician
+      case "ta": return "🇮🇳"; // Tamil
+      case "te": return "🇮🇳"; // Telugu
+      case "mr": return "🇮🇳"; // Marathi
+      case "ur": return "🇵🇰"; // Urdu
+      case "et": return "🇪🇪"; // Estonian
+      case "lv": return "🇱🇻"; // Latvian
+      case "is": return "🇮🇸"; // Icelandic
+      case "ka": return "🇬🇪"; // Georgian
+      case "hy": return "🇦🇲"; // Armenian
+      case "az": return "🇦🇿"; // Azerbaijani
+      case "sw": return "🇰🇪"; // Swahili
+      case "af": return "🇿🇦"; // Afrikaans
+      default: return "🌍";
     }
   }
+
+  String _getLanguageName() {
+    String? langCode = widget.language?.toLowerCase().substring(0, 2);
+
+    switch (langCode) {
+      case "en": return "English";
+      case "zh": return "Chinese";
+      case "es": return "Spanish";
+      case "fr": return "French";
+      case "de": return "German";
+      case "ar": return "Arabic";
+      case "ru": return "Russian";
+      case "pt": return "Portuguese";
+      case "ja": return "Japanese";
+      case "it": return "Italian";
+      case "hi": return "Hindi";
+      case "bn": return "Bengali";
+      case "pa": return "Punjabi";
+      case "nl": return "Dutch";
+      case "tr": return "Turkish";
+      case "vi": return "Vietnamese";
+      case "pl": return "Polish";
+      case "sv": return "Swedish";
+      case "ko": return "Korean";
+      case "th": return "Thai";
+      case "he": return "Hebrew";
+      case "uk": return "Ukrainian";
+      case "id": return "Indonesian";
+      case "ro": return "Romanian";
+      case "fa": return "Persian (Farsi)";
+      case "cs": return "Czech";
+      case "el": return "Greek";
+      case "fi": return "Finnish";
+      case "hu": return "Hungarian";
+      case "da": return "Danish";
+      case "no": return "Norwegian";
+      case "bg": return "Bulgarian";
+      case "ms": return "Malay";
+      case "sr": return "Serbian";
+      case "lt": return "Lithuanian";
+      case "sk": return "Slovak";
+      case "hr": return "Croatian";
+      case "sl": return "Slovenian";
+      case "ca": return "Catalan";
+      case "eu": return "Basque";
+      case "gl": return "Galician";
+      case "ta": return "Tamil";
+      case "te": return "Telugu";
+      case "mr": return "Marathi";
+      case "ur": return "Urdu";
+      case "et": return "Estonian";
+      case "lv": return "Latvian";
+      case "is": return "Icelandic";
+      case "ka": return "Georgian";
+      case "hy": return "Armenian";
+      case "az": return "Azerbaijani";
+      case "sw": return "Swahili";
+      case "af": return "Afrikaans";
+      default: return widget.language ?? "-";
+    }
+  }
+
 
   Widget _buildLineSeparator() {
     return Container(
