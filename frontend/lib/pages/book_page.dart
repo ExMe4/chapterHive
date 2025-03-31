@@ -115,8 +115,8 @@ class _BookPageState extends State<BookPage> {
             child: Center(
               child: Image.network(
                 widget.coverImage,
-                height: 250,
-                width: 180,
+                height: 200,
+                width: 140,
                 fit: BoxFit.contain,
                 alignment: Alignment.center,
               ),
@@ -233,7 +233,16 @@ class _BookPageState extends State<BookPage> {
               const SizedBox(width: 12),
               Flexible(flex: 2, child: _buildGridCard(_getLanguageFlag(), textColor, "", showOnlyFlag: true)),
               const SizedBox(width: 12),
-              Flexible(flex: 3, child: _buildGridCard(widget.publisher ?? "-", textColor, "Publisher")),
+              Flexible(
+                flex: 3,
+                child: _buildGridCard(
+                  widget.publisher != null && widget.publisher!.length > 8
+                      ? "${widget.publisher!.substring(0, 8)}..."
+                      : widget.publisher ?? "-",
+                  textColor,
+                  "Publisher",
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 10),
