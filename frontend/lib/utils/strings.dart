@@ -19,4 +19,6 @@ class AppStrings {
   static const String unknown = "Unknown";
   static const String searchBoxHint = "Search books, authors...";
   static const String pageNumberUnknown = "Page number unknown";
+  static const String translate = "Translate";
+  static const String translated = "[TRANSLATED]";
 }
