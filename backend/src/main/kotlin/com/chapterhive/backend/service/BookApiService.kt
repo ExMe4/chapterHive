@@ -45,8 +45,10 @@ class BookApiService(
         val bookData = items.firstOrNull() ?: return null
         val volumeInfo = (bookData["volumeInfo"] as? Map<*, *>)?.mapKeys { it.key.toString() } ?: emptyMap()
 
-        val isbnList = (volumeInfo["industryIdentifiers"] as? List<Map<String, String>>)
-            ?.mapNotNull { it["identifier"] } ?: emptyList()
+        val isbnList = (volumeInfo["industryIdentifiers"] as? List<*>)
+            ?.mapNotNull { it as? Map<*, *> }
+            ?.mapNotNull { it["identifier"] as? String }
+            ?: emptyList()
 
         return Book(
             googleBookId = bookData["id"] as? String,
