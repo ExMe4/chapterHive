@@ -1,6 +1,8 @@
+import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:translator/translator.dart';
 import '../utils/strings.dart';
 
 class BookPage extends StatefulWidget {
@@ -44,6 +46,7 @@ class BookPage extends StatefulWidget {
 class _BookPageState extends State<BookPage> {
   bool showDetailsList = false;
   bool _isExpanded = false;
+  String? translatedDescription;
 
   void _toggleDetails() {
     setState(() {
@@ -287,6 +290,10 @@ class _BookPageState extends State<BookPage> {
   }
 
   Widget _buildDescriptionCard(Color textColor) {
+    if (widget.description == null || widget.description!.trim().isEmpty) {
+      return const SizedBox.shrink();
+    }
+
     return _buildCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -322,11 +329,12 @@ class _BookPageState extends State<BookPage> {
               final isOverflowing = textPainter.didExceedMaxLines;
 
               return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   AnimatedContainer(
                     duration: const Duration(milliseconds: 300),
                     child: Text(
-                      widget.description!,
+                      translatedDescription ?? widget.description!,
                       maxLines: _isExpanded ? null : 5,
                       overflow: _isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
                       style: TextStyle(
@@ -336,21 +344,38 @@ class _BookPageState extends State<BookPage> {
                       ),
                     ),
                   ),
-                  if (isOverflowing)
-                    TextButton(
-                      onPressed: () {
-                        setState(() {
-                          _isExpanded = !_isExpanded;
-                        });
-                      },
-                      child: Text(
-                        _isExpanded ? AppStrings.readLess : AppStrings.readMore,
-                        style: TextStyle(
-                          color: BookPage.highlightColor,
-                          fontWeight: FontWeight.bold,
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      if (isOverflowing)
+                        TextButton(
+                          onPressed: () {
+                            setState(() {
+                              _isExpanded = !_isExpanded;
+                            });
+                          },
+                          child: Text(
+                            _isExpanded ? AppStrings.readLess : AppStrings.readMore,
+                            style: TextStyle(
+                              color: BookPage.highlightColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      TextButton.icon(
+                        onPressed: _translateDescription,
+                        icon: Icon(Icons.translate, color: BookPage.highlightColor),
+                        label: Text(
+                          AppStrings.translate,
+                          style: TextStyle(
+                            color: BookPage.highlightColor,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
-                    ),
+                    ],
+                  ),
                 ],
               );
             },
@@ -359,6 +384,27 @@ class _BookPageState extends State<BookPage> {
       ),
     );
   }
+
+
+  void _translateDescription() async {
+    if (widget.description == null || widget.description!.isEmpty) return;
+
+    final translator = GoogleTranslator();
+    String description = widget.description!;
+
+    String userLanguage = Platform.localeName.split('_')[0];
+
+    try {
+      Translation translated = await translator.translate(description, to: userLanguage);
+
+      setState(() {
+        translatedDescription = "${AppStrings.translated} ${translated.text}";
+      });
+    } catch (e) {
+      print("Translation failed: $e");
+    }
+  }
+
 
   Widget _buildCommentSection(Color textColor) {
     return _buildCard(
