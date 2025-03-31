@@ -109,10 +109,26 @@ class _BookPageState extends State<BookPage> {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(8.0),
-            child: Image.network(widget.coverImage, height: 300, fit: BoxFit.contain),
+            child: Center(
+              child: Image.network(
+                widget.coverImage,
+                height: 250,
+                width: 180,
+                fit: BoxFit.contain,
+                alignment: Alignment.center,
+              ),
+            ),
           ),
           const SizedBox(height: 12),
-          Text(widget.title, textAlign: TextAlign.center, style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: textColor)),
+          Text(
+            widget.title,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: textColor,
+            ),
+          ),
         ],
       ),
     );
