@@ -15,7 +15,7 @@ class AppStrings {
   static const String post = "Post";
   static const String readLess = "Read less";
   static const String readMore = "Read more";
-  static const String synopsis = "Synopsis";
+  static const String description = "Description";
   static const String unknown = "Unknown";
   static const String searchBoxHint = "Search books, authors...";
   static const String pageNumberUnknown = "Page number unknown";

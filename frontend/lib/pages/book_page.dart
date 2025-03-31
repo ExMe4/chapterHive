@@ -89,7 +89,7 @@ class _BookPageState extends State<BookPage> {
                             : _buildDetailsGrid(textColor),
                       ),
                       _buildLineSeparator(),
-                      if (widget.description != null) _buildSynopsisCard(textColor),
+                      if (widget.description != null) _buildDescriptionCard(textColor),
                       _buildCommentSection(textColor),
                     ],
                   ),
@@ -270,13 +270,13 @@ class _BookPageState extends State<BookPage> {
     );
   }
 
-  Widget _buildSynopsisCard(Color textColor) {
+  Widget _buildDescriptionCard(Color textColor) {
     return _buildCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            AppStrings.synopsis,
+            AppStrings.description,
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
