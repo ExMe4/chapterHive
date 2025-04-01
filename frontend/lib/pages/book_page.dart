@@ -46,6 +46,7 @@ class BookPage extends StatefulWidget {
 class _BookPageState extends State<BookPage> {
   bool showDetailsList = false;
   bool _isExpanded = false;
+  bool _isTranslated = false;
   String? translatedDescription;
 
   void _toggleDetails() {
@@ -318,24 +319,9 @@ class _BookPageState extends State<BookPage> {
           const SizedBox(height: 6),
           LayoutBuilder(
             builder: (context, constraints) {
-              final textSpan = TextSpan(
-                text: widget.description!,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontStyle: FontStyle.italic,
-                  color: textColor.withAlpha((0.9 * 255).toInt()),
-                ),
-              );
-
-              final textPainter = TextPainter(
-                text: textSpan,
-                maxLines: 5,
-                textDirection: TextDirection.ltr,
-              );
-
-              textPainter.layout(maxWidth: constraints.maxWidth);
-
-              final isOverflowing = textPainter.didExceedMaxLines;
+              final textToShow = translatedDescription ?? widget.description!;
+              final isOverflowing = textToShow.length >
+                  300;
 
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -343,9 +329,11 @@ class _BookPageState extends State<BookPage> {
                   AnimatedContainer(
                     duration: const Duration(milliseconds: 300),
                     child: Text(
-                      translatedDescription ?? widget.description!,
+                      textToShow,
                       maxLines: _isExpanded ? null : 5,
-                      overflow: _isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
+                      overflow: _isExpanded
+                          ? TextOverflow.visible
+                          : TextOverflow.ellipsis,
                       style: TextStyle(
                         fontSize: 16,
                         fontStyle: FontStyle.italic,
@@ -365,7 +353,8 @@ class _BookPageState extends State<BookPage> {
                             });
                           },
                           child: Text(
-                            _isExpanded ? AppStrings.readLess : AppStrings.readMore,
+                            _isExpanded ? AppStrings.readLess : AppStrings
+                                .readMore,
                             style: TextStyle(
                               color: BookPage.highlightColor,
                               fontWeight: FontWeight.bold,
@@ -374,9 +363,11 @@ class _BookPageState extends State<BookPage> {
                         ),
                       TextButton.icon(
                         onPressed: _translateDescription,
-                        icon: Icon(Icons.translate, color: BookPage.highlightColor),
+                        icon: Icon(
+                            Icons.translate, color: BookPage.highlightColor),
                         label: Text(
-                          AppStrings.translate,
+                          _isTranslated ? AppStrings.showOriginal : AppStrings
+                              .translate,
                           style: TextStyle(
                             color: BookPage.highlightColor,
                             fontWeight: FontWeight.bold,
@@ -396,6 +387,14 @@ class _BookPageState extends State<BookPage> {
 
 
   void _translateDescription() async {
+    if (_isTranslated) {
+      setState(() {
+        translatedDescription = null;
+        _isTranslated = false;
+      });
+      return;
+    }
+
     if (widget.description == null || widget.description!.isEmpty) return;
 
     final translator = GoogleTranslator();
@@ -408,6 +407,7 @@ class _BookPageState extends State<BookPage> {
 
       setState(() {
         translatedDescription = "${AppStrings.translated} ${translated.text}";
+        _isTranslated = true;
       });
     } catch (e) {
       print("Translation failed: $e");

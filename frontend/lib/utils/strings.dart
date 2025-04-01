@@ -21,4 +21,5 @@ class AppStrings {
   static const String pageNumberUnknown = "Page number unknown";
   static const String translate = "Translate";
   static const String translated = "[TRANSLATED]";
+  static const String showOriginal = "Show Original";
 }
