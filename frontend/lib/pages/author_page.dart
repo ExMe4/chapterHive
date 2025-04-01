@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../utils/strings.dart';
+import '../widgets/custom_drawer.dart';
 
 class AuthorPage extends StatelessWidget {
   static const highlightColor = Color(0xFFFFD700);
@@ -9,20 +10,21 @@ class AuthorPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Map<String, dynamic>? args =
-    ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    ModalRoute
+        .of(context)
+        ?.settings
+        .arguments as Map<String, dynamic>?;
 
     final String authorName = args?['name'] ?? AppStrings.unknown;
     final String? authorImage = args?['image'];
 
     return Scaffold(
+      drawer: CustomDrawer(),
       backgroundColor: highlightColor,
-      appBar: AppBar(
-        title: Text(authorName),
-        backgroundColor: Colors.black,
-      ),
       body: Center(
         child: Card(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12)),
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(

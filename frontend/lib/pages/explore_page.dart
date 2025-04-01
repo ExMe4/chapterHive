@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../utils/strings.dart';
+import '../widgets/custom_drawer.dart';
 import 'book_page.dart';
 
 class ExplorePage extends StatefulWidget {
@@ -41,6 +42,7 @@ class _ExplorePageState extends State<ExplorePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: CustomDrawer(),
       backgroundColor: const Color(0xFFFFD700),
       body: SafeArea(
         child: Column(

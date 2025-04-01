@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:translator/translator.dart';
 import '../utils/strings.dart';
+import '../widgets/custom_app_bar.dart';
+import '../widgets/custom_drawer.dart';
 
 class BookPage extends StatefulWidget {
   final String title;
@@ -48,6 +50,7 @@ class _BookPageState extends State<BookPage> {
   bool _isExpanded = false;
   bool _isTranslated = false;
   String? translatedDescription;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   void _toggleDetails() {
     setState(() {
@@ -60,48 +63,54 @@ class _BookPageState extends State<BookPage> {
     final textColor = Colors.white;
 
     return Scaffold(
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: Image.network(
-              widget.coverImage,
-              fit: BoxFit.cover,
-              width: double.infinity,
-              height: double.infinity,
+      drawer: CustomDrawer(),
+      body: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) => [
+          CustomAppBar(onMenuPressed: () => _scaffoldKey.currentState?.openDrawer()),
+        ],
+        body: Stack(
+          children: [
+            Positioned.fill(
+              child: Image.network(
+                widget.coverImage,
+                fit: BoxFit.cover,
+                width: double.infinity,
+                height: double.infinity,
+              ),
             ),
-          ),
-          BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-            child: Container(color: Colors.black.withAlpha((0.5 * 255).toInt())),
-          ),
-          Center(
-            child: SingleChildScrollView(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 800),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildBookHeader(textColor),
-                      _buildInfoSection(textColor),
-                      _buildLineSeparator(),
-                      GestureDetector(
-                        onTap: _toggleDetails,
-                        child: showDetailsList
-                            ? _buildDetailsList(textColor)
-                            : _buildDetailsGrid(textColor),
-                      ),
-                      _buildLineSeparator(),
-                      if (widget.description != null) _buildDescriptionCard(textColor),
-                      _buildCommentSection(textColor),
-                    ],
+            BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+              child: Container(color: Colors.black.withAlpha((0.5 * 255).toInt())),
+            ),
+            Center(
+              child: SingleChildScrollView(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 800),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildBookHeader(textColor),
+                        _buildInfoSection(textColor),
+                        _buildLineSeparator(),
+                        GestureDetector(
+                          onTap: _toggleDetails,
+                          child: showDetailsList
+                              ? _buildDetailsList(textColor)
+                              : _buildDetailsGrid(textColor),
+                        ),
+                        _buildLineSeparator(),
+                        if (widget.description != null) _buildDescriptionCard(textColor),
+                        _buildCommentSection(textColor),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
