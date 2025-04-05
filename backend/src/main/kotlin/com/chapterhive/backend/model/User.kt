@@ -14,12 +14,13 @@ data class User(
     val email: String,
 
     val username: String? = null,
-    val password: String? = null,
     val profilePicture: String? = null,
-    val provider: String = "google", // Mark user as a Google user
 
     @Enumerated(EnumType.STRING)
-    val role: Role = Role.USER, // Default role is USER
+    val provider: Provider,
+
+    @Enumerated(EnumType.STRING)
+    val role: Role = Role.USER,
 
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
     val readingProgress: List<ReadingProgress> = mutableListOf(),
@@ -29,5 +30,9 @@ data class User(
 ) {
     enum class Role {
         ADMIN, USER
+    }
+
+    enum class Provider {
+        GOOGLE, APPLE
     }
 }
