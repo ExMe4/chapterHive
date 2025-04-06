@@ -2,6 +2,7 @@ package com.chapterhive.backend.controller
 
 import com.chapterhive.backend.security.JwtTokenProvider
 import com.chapterhive.backend.service.AuthService
+import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -15,6 +16,7 @@ class AuthController(
 ) {
 
     @PostMapping("/login")
+    @Operation(summary = "Login", description = "Allows user to login with Google or Apple")
     fun login(@RequestParam token: String, @RequestParam provider: String): ResponseEntity<Map<String, String>> {
         val verifiedUser = when (provider.lowercase()) {
             "google" -> authService.verifyGoogleToken(token)
