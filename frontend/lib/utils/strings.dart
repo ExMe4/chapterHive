@@ -22,4 +22,8 @@ class AppStrings {
   static const String translate = "Translate";
   static const String translated = "[TRANSLATED]";
   static const String showOriginal = "Show Original";
+  static const String loginWithGoogle = "Login with Google";
+  static const String loginWithApple = "Login with Apple";
+  static const String loginSuccess = "Logged in successfully!";
+  static const String loginFailed = "Login failed";
 }

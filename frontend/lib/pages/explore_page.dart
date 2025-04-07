@@ -46,6 +46,7 @@ class _ExplorePageState extends State<ExplorePage> {
       backgroundColor: const Color(0xFFFFD700),
       body: SafeArea(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.values.first,
           children: [
             _buildSearchBar(),
             if (_books.isNotEmpty) Expanded(child: _buildResultsCard()),
@@ -57,7 +58,7 @@ class _ExplorePageState extends State<ExplorePage> {
 
   Widget _buildSearchBar() {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         children: [
           Material(
