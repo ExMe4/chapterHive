@@ -63,6 +63,7 @@ class _BookPageState extends State<BookPage> {
     final textColor = Colors.white;
 
     return Scaffold(
+      key: _scaffoldKey,
       drawer: CustomDrawer(),
       body: NestedScrollView(
         headerSliverBuilder: (context, innerBoxIsScrolled) => [
