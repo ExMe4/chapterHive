@@ -81,6 +81,8 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-test") // Spring Boot testing support
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5") // JUnit 5 for Kotlin
 	testImplementation("org.springframework.security:spring-security-test") // Security test utilities
+	testImplementation("org.mockito:mockito-core")
+	testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1") // For cleaner Kotlin mock syntax
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher") // JUnit test launcher
 }
 

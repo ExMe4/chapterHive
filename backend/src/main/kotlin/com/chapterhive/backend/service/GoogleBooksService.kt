@@ -6,14 +6,15 @@ import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
 
 @Service
-class GoogleBooksService {
+class GoogleBooksService(
+    private val restTemplate: RestTemplate
+) {
     private val googleBooksApiUrl = "https://www.googleapis.com/books/v1/volumes?q="
     private val logger = LoggerFactory.getLogger(GoogleBooksService::class.java)
 
     fun searchBooks(query: String): List<BookResponse> {
         logger.info("Searching Google Books API for: $query")
 
-        val restTemplate = RestTemplate()
         val url = "$googleBooksApiUrl$query"
 
         return try {
