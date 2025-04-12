@@ -17,7 +17,7 @@ class AuthController(
 
     @PostMapping("/login")
     @Operation(summary = "Login", description = "Allows user to login with Google or Apple")
-    fun login(@RequestParam token: String, @RequestParam provider: String): ResponseEntity<Map<String, String>> {
+    fun login(@RequestParam token: String, @RequestParam provider: String): Any? {
         val verifiedUser = when (provider.lowercase()) {
             "google" -> authService.verifyGoogleToken(token)
             "apple" -> authService.verifyAppleToken(token)
@@ -27,7 +27,12 @@ class AuthController(
         verifiedUser?.let {
             val user = authService.findOrCreateUser(it.email, it.username, it.profilePicture, provider)
             val jwt = jwtTokenProvider.generateToken(user.email, user.role.name)
-            return ResponseEntity.ok(mapOf("token" to jwt))
+            return ResponseEntity.ok(
+                mapOf(
+                    "token" to jwt,
+                    "user" to user.toResponse()
+                )
+            ).toString()
         }
 
         return ResponseEntity.status(401).body(mapOf("error" to "Invalid token"))

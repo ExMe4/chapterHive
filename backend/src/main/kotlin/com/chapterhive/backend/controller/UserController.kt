@@ -1,6 +1,7 @@
 package com.chapterhive.backend.controller
 
 import com.chapterhive.backend.model.User
+import com.chapterhive.backend.model.response.UserResponse
 import com.chapterhive.backend.repository.UserRepository
 import com.chapterhive.backend.security.JwtTokenProvider
 import io.swagger.v3.oas.annotations.Operation
@@ -23,9 +24,9 @@ class UserController(
     @Operation(summary = "Get user profile", description = "Retrieves the user profile based on user ID")
     @GetMapping("/{userId}")
     fun getUserProfile(
-        @Parameter(description = "User ID of the profile to fetch") @PathVariable userId: UUID,
+        @PathVariable userId: UUID,
         @RequestHeader("Authorization") token: String
-    ): ResponseEntity<User> {
+    ): ResponseEntity<UserResponse> {
         val email = jwtTokenProvider.getEmailFromToken(token.substring(7))
         val user = userRepository.findByEmail(email) ?: return ResponseEntity.status(403).build()
 
@@ -33,7 +34,7 @@ class UserController(
             return ResponseEntity.status(403).build()
         }
 
-        return ResponseEntity.ok(user)
+        return ResponseEntity.ok(user.toResponse())
     }
 
     @PreAuthorize("isAuthenticated()")
