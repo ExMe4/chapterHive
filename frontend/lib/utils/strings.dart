@@ -26,4 +26,7 @@ class AppStrings {
   static const String loginWithApple = "Login with Apple";
   static const String loginSuccess = "Logged in successfully!";
   static const String loginFailed = "Login failed";
+  static const String profileUpdated = "Profile Updated";
+  static const String saveProfile = "Save Profile";
+  static const String enterUsername = "Enter username";
 }
