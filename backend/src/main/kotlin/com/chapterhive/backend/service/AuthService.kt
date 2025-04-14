@@ -16,17 +16,24 @@ class AuthService(
 
     fun verifyGoogleToken(token: String): OAuthUser? {
         val url = "https://oauth2.googleapis.com/tokeninfo?id_token=$token"
-        val response = restTemplate.getForObject(url, String::class.java)
-        val jsonNode: JsonNode = ObjectMapper().readTree(response)
+        try {
+            val response = restTemplate.getForObject(url, String::class.java)
+            println("Google token verification response: $response")
+            val jsonNode: JsonNode = ObjectMapper().readTree(response)
 
-        return if (jsonNode.has("email")) {
-            OAuthUser(
-                email = jsonNode.get("email").asText(),
-                username = jsonNode.get("name")?.asText(),
-                profilePicture = jsonNode.get("picture")?.asText()
-            )
-        } else {
-            null
+            return if (jsonNode.has("email")) {
+                OAuthUser(
+                    email = jsonNode.get("email").asText(),
+                    username = jsonNode.get("name")?.asText(),
+                    profilePicture = jsonNode.get("picture")?.asText()
+                )
+            } else {
+                println("Token missing email: $jsonNode")
+                null
+            }
+        } catch (e: Exception) {
+            println("Token verification error: ${e.message}")
+            return null
         }
     }
 

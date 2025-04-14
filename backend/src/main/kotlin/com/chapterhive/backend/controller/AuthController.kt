@@ -18,23 +18,44 @@ class AuthController(
     @PostMapping("/login")
     @Operation(summary = "Login", description = "Allows user to login with Google or Apple")
     fun login(@RequestParam token: String, @RequestParam provider: String): Any? {
+        println("Received login request for provider: $provider")
+        println("Token (shortened): ${token.take(30)}...")
+
         val verifiedUser = when (provider.lowercase()) {
-            "google" -> authService.verifyGoogleToken(token)
+            "google" -> {
+                println("Verifying Google token")
+                authService.verifyGoogleToken(token)
+            }
             "apple" -> authService.verifyAppleToken(token)
-            else -> return ResponseEntity.badRequest().body(mapOf("error" to "Invalid provider"))
+            else -> {
+                println("Invalid provider: $provider")
+                return ResponseEntity.badRequest().body(mapOf("error" to "Invalid provider"))
+            }
         }
 
-        verifiedUser?.let {
-            val user = authService.findOrCreateUser(it.email, it.username, it.profilePicture, provider)
-            val jwt = jwtTokenProvider.generateToken(user.email, user.role.name)
-            return ResponseEntity.ok(
-                mapOf(
-                    "token" to jwt,
-                    "user" to user.toResponse()
-                )
-            ).toString()
+        if (verifiedUser == null) {
+            println("Token verification failed")
+            return ResponseEntity.status(401).body(mapOf("error" to "Invalid token"))
         }
 
-        return ResponseEntity.status(401).body(mapOf("error" to "Invalid token"))
+        println("Token verified: ${verifiedUser.email}")
+
+        val user = authService.findOrCreateUser(
+            verifiedUser.email,
+            verifiedUser.username,
+            verifiedUser.profilePicture,
+            provider
+        )
+
+        val jwt = jwtTokenProvider.generateToken(user.email, user.role.name)
+        println("Generated JWT for ${user.email}")
+
+        return ResponseEntity.ok(
+            mapOf(
+                "token" to jwt,
+                "user" to user.toResponse()
+            )
+        )
     }
+
 }
