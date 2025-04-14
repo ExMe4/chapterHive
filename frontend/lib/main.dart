@@ -3,8 +3,11 @@ import 'pages/author_page.dart';
 import 'pages/explore_page.dart';
 import 'widgets/custom_app_bar.dart';
 import 'widgets/custom_drawer.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+
+Future<void> main() async {
+  await dotenv.load();
   runApp(const ChapterHiveApp());
 }
 

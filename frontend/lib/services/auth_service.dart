@@ -2,23 +2,34 @@ import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 
 class AuthService {
-  final _googleSignIn = GoogleSignIn();
+  final _googleSignIn = GoogleSignIn(
+    scopes: ['email', 'profile'],
+    serverClientId: dotenv.env['SERVER_CLIENT_ID'],
+  );
   final _storage = FlutterSecureStorage();
-  final _baseUrl = 'http://localhost:8080/api'; // change for prod
+  final _baseUrl = dotenv.env['BASE_URL']!;
 
   String? _jwt;
   String? _userId;
 
   Future<bool> signInWithGoogle() async {
     try {
+      print("TESTING");
       final googleUser = await _googleSignIn.signIn();
+      if (googleUser == null) {
+        print("Google Sign-In was aborted or failed. User is null.");
+        return false;
+      }
       final googleAuth = await googleUser?.authentication;
 
       final idToken = googleAuth?.idToken;
       if (idToken == null) return false;
 
+      print("Sending token to backend: ${idToken.substring(0, 20)}...");
       final response = await http.post(
         Uri.parse("$_baseUrl/auth/login"),
         body: {
@@ -26,6 +37,8 @@ class AuthService {
           'provider': 'google',
         },
       );
+      print("Backend responded with status: ${response.statusCode}");
+      print("Backend response body: ${response.body}");
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);

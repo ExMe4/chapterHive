@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import '../utils/strings.dart';
 import '../widgets/custom_drawer.dart';
 import 'book_page.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ExplorePage extends StatefulWidget {
   const ExplorePage({super.key});
@@ -25,7 +26,7 @@ class _ExplorePageState extends State<ExplorePage> {
 
     setState(() => _isLoading = true);
 
-    final uri = Uri.parse('http://127.0.0.1:8080/api/explore?query=$query'); // change for prod
+    final uri = Uri.parse("${dotenv.env['EXPLORE_URL']!}?query=$query");
     final response = await http.get(uri);
 
     if (response.statusCode == 200) {
