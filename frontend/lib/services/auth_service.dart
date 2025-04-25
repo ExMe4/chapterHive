@@ -18,10 +18,8 @@ class AuthService {
 
   Future<bool> signInWithGoogle() async {
     try {
-      print("TESTING");
       final googleUser = await _googleSignIn.signIn();
       if (googleUser == null) {
-        print("Google Sign-In was aborted or failed. User is null.");
         return false;
       }
       final googleAuth = await googleUser?.authentication;
@@ -29,7 +27,6 @@ class AuthService {
       final idToken = googleAuth?.idToken;
       if (idToken == null) return false;
 
-      print("Sending token to backend: ${idToken.substring(0, 20)}...");
       final response = await http.post(
         Uri.parse("$_baseUrl/auth/login"),
         body: {
@@ -37,8 +34,6 @@ class AuthService {
           'provider': 'google',
         },
       );
-      print("Backend responded with status: ${response.statusCode}");
-      print("Backend response body: ${response.body}");
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -52,7 +47,6 @@ class AuthService {
 
       return false;
     } catch (e) {
-      print("Google sign-in failed: $e");
       return false;
     }
   }
