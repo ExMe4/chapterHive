@@ -30,7 +30,7 @@ class ReviewController(
     @PostMapping("/{bookId}/{userId}")
     fun addReview(
         @Parameter(description = "ID of the book to review") @PathVariable bookId: UUID,
-        @Parameter(description = "ID of the user adding the review") @PathVariable userId: UUID,
+        @Parameter(description = "ID of the user adding the review") @PathVariable userId: String,
         @RequestBody review: Review
     ): ResponseEntity<Review> {
         val book = bookRepository.findById(bookId)

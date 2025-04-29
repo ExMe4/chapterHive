@@ -41,6 +41,7 @@ class AuthController(
         println("Token verified: ${verifiedUser.email}")
 
         val user = authService.findOrCreateUser(
+            verifiedUser.id,
             verifiedUser.email,
             verifiedUser.username,
             verifiedUser.profilePicture,

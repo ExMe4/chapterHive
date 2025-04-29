@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
-import java.util.*
 
 @Tag(name = "Users", description = "User profile management endpoints")
 @RestController
@@ -24,7 +23,7 @@ class UserController(
     @Operation(summary = "Get user profile", description = "Retrieves the user profile based on user ID")
     @GetMapping("/{userId}")
     fun getUserProfile(
-        @PathVariable userId: UUID,
+        @PathVariable userId: String,
         @RequestHeader("Authorization") token: String
     ): ResponseEntity<UserResponse> {
         val email = jwtTokenProvider.getEmailFromToken(token.substring(7))
@@ -41,7 +40,7 @@ class UserController(
     @Operation(summary = "Update user profile", description = "Allows a user to update their profile details")
     @PutMapping("/{userId}")
     fun updateUserProfile(
-        @Parameter(description = "User ID of the profile to update") @PathVariable userId: UUID,
+        @Parameter(description = "User ID of the profile to update") @PathVariable userId: String,
         @RequestBody updatedUser: User,
         @RequestHeader("Authorization") token: String
     ): ResponseEntity<User> {
@@ -59,10 +58,11 @@ class UserController(
         return ResponseEntity.ok(userRepository.save(updatedProfile))
     }
 
+    // TODO
     @Operation(summary = "Get reading progress", description = "Fetches a list of books the user is currently reading")
     @GetMapping("/{userId}/progress")
     fun getReadingProgress(
-        @Parameter(description = "User ID to fetch reading progress") @PathVariable userId: UUID
+        @PathVariable userId: String
     ): ResponseEntity<List<String>> {
         val user = userRepository.findById(userId)
         return if (user.isPresent) {

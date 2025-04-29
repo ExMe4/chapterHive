@@ -3,14 +3,12 @@ package com.chapterhive.backend.model
 import com.chapterhive.backend.model.response.UserResponse
 import jakarta.persistence.*
 import java.time.LocalDateTime
-import java.util.*
 
 @Entity
 @Table(name = "users")
 data class User(
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    val id: UUID? = null,
+    val id: String,
 
     @Column(unique = true, nullable = false)
     val email: String,
@@ -34,7 +32,7 @@ data class User(
     val createdAt: LocalDateTime = LocalDateTime.now()
 ) {
     fun toResponse() = UserResponse(
-        id = this.id!!,
+        id = this.id,
         email = this.email,
         username = this.username,
         profilePicture = this.profilePicture,
