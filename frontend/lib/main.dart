@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/pages/splash_wrapper.dart';
 import 'pages/author_page.dart';
 import 'pages/explore_page.dart';
 import 'widgets/custom_app_bar.dart';
@@ -21,7 +22,7 @@ class ChapterHiveApp extends StatelessWidget {
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
       themeMode: ThemeMode.system,
-      home: const MainScreen(),
+      home: const SplashWrapper(),
     );
   }
 }

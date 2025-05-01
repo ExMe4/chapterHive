@@ -22,9 +22,9 @@ class AuthService {
       if (googleUser == null) {
         return false;
       }
-      final googleAuth = await googleUser?.authentication;
+      final googleAuth = await googleUser.authentication;
 
-      final idToken = googleAuth?.idToken;
+      final idToken = googleAuth.idToken;
       if (idToken == null) return false;
 
       final response = await http.post(
