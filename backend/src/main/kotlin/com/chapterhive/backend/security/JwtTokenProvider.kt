@@ -12,8 +12,7 @@ import java.util.*
 
 @Component
 class JwtTokenProvider(
-    @Value("\${jwt.secret}") private val jwtSecret: String,
-    @Value("\${jwt.expirationMs}") private val jwtExpirationMs: Long
+    @Value("\${jwt.secret}") private val jwtSecret: String
 ) {
     private val logger = LoggerFactory.getLogger(JwtTokenProvider::class.java)
 
@@ -24,13 +23,11 @@ class JwtTokenProvider(
 
     fun generateToken(email: String, role: String): String {
         val now = Date()
-        val expiryDate = Date(now.time + jwtExpirationMs)
 
         return Jwts.builder()
             .setSubject(email)
             .claim("role", role)
             .setIssuedAt(now)
-            .setExpiration(expiryDate)
             .signWith(getSigningKey())
             .compact()
     }
