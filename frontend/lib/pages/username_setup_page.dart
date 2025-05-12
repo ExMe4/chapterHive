@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:frontend/utils/strings.dart';
 import '../main.dart';
 import '../services/auth_service.dart';
 
@@ -18,7 +18,8 @@ class _UsernameSetupPageState extends State<UsernameSetupPage> {
     if (_controller.text.trim().isEmpty) return;
     final updated = await authService.updateUser(_controller.text.trim(), null);
     if (updated) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const MainScreen()));
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (_) => const MainScreen()));
     }
   }
 
@@ -32,19 +33,30 @@ class _UsernameSetupPageState extends State<UsernameSetupPage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text("Choose your username", style: TextStyle(fontSize: 18)),
+              const Text(AppStrings.chooseYourUsername,
+                  style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold)),
               const SizedBox(height: 20),
               TextField(
                 controller: _controller,
                 decoration: const InputDecoration(
-                  hintText: "Username",
+                  hintText: AppStrings.username,
                   filled: true,
                   fillColor: Colors.white,
                   border: OutlineInputBorder(),
                 ),
               ),
               const SizedBox(height: 20),
-              ElevatedButton(onPressed: _submitUsername, child: const Text("Continue")),
+              ElevatedButton(
+                onPressed: _submitUsername,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.black,
+                ),
+                child: const Text(AppStrings.saveUsername),
+              ),
             ],
           ),
         ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/pages/username_setup_page.dart';
 import '../main.dart';
 import '../services/auth_service.dart';
+import '../utils/strings.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -29,14 +30,22 @@ class LoginPage extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             ElevatedButton.icon(
-              icon: const Icon(Icons.g_mobiledata_rounded),
-              label: const Text('Login with Google'),
+              icon: Icon(Icons.g_mobiledata_rounded, color: Color(0xFFFFD700)),
+              label: Text(AppStrings.loginWithGoogle),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.black,
+              ),
               onPressed: _handleLogin,
             ),
             const SizedBox(height: 10),
             ElevatedButton.icon(
-              icon: const Icon(Icons.apple),
-              label: const Text('Login with Apple'),
+              icon: Icon(Icons.apple, color: Color(0xFFFFD700)),
+              label: Text(AppStrings.loginWithApple),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.black,
+              ),
               onPressed: () {}, // TODO
             ),
           ],

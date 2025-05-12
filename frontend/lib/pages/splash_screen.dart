@@ -8,7 +8,10 @@ class SplashScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Color(0xFFFFD700),
       body: Center(
-        child: Image.asset('assets/logo.png', width: 120),
+        child: ClipRRect(
+          borderRadius: BorderRadius.all(Radius.circular(20)),
+          child: Image.asset('assets/logo.png', width: 120),
+        ),
       ),
     );
   }

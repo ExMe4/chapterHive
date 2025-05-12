@@ -29,4 +29,7 @@ class AppStrings {
   static const String profileUpdated = "Profile Updated";
   static const String saveProfile = "Save Profile";
   static const String enterUsername = "Enter username";
+  static const String chooseYourUsername = "Choose your username";
+  static const String username = "Username";
+  static const String saveUsername = "saveUsername";
 }
