@@ -35,17 +35,27 @@ class _UsernameSetupPageState extends State<UsernameSetupPage> {
             children: [
               const Text(AppStrings.chooseYourUsername,
                   style: TextStyle(
-                      fontSize: 16,
+                      fontSize: 18,
                       color: Colors.white,
                       fontWeight: FontWeight.bold)),
               const SizedBox(height: 20),
               TextField(
                 controller: _controller,
+                style: const TextStyle(
+                  color: Colors.black, // darker text when typing
+                ),
                 decoration: const InputDecoration(
                   hintText: AppStrings.username,
+                  hintStyle: TextStyle(color: Colors.black26), // lighter hint text
                   filled: true,
                   fillColor: Colors.white,
                   border: OutlineInputBorder(),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black, width: 2),
+                  ),
                 ),
               ),
               const SizedBox(height: 20),

@@ -31,5 +31,5 @@ class AppStrings {
   static const String enterUsername = "Enter username";
   static const String chooseYourUsername = "Choose your username";
   static const String username = "Username";
-  static const String saveUsername = "saveUsername";
+  static const String saveUsername = "Save Username";
 }
