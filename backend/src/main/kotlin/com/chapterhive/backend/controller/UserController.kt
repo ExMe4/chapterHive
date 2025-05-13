@@ -1,6 +1,7 @@
 package com.chapterhive.backend.controller
 
 import com.chapterhive.backend.model.User
+import com.chapterhive.backend.model.request.UpdateUserRequest
 import com.chapterhive.backend.model.response.UserResponse
 import com.chapterhive.backend.repository.UserRepository
 import com.chapterhive.backend.security.JwtTokenProvider
@@ -41,7 +42,7 @@ class UserController(
     @PutMapping("/{userId}")
     fun updateUserProfile(
         @Parameter(description = "User ID of the profile to update") @PathVariable userId: String,
-        @RequestBody updatedUser: User,
+        @RequestBody updatedUser: UpdateUserRequest,
         @RequestHeader("Authorization") token: String
     ): ResponseEntity<User> {
         val email = jwtTokenProvider.getEmailFromToken(token.substring(7))
