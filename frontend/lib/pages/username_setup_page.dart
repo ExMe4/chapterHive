@@ -15,11 +15,19 @@ class _UsernameSetupPageState extends State<UsernameSetupPage> {
   final authService = AuthService();
 
   Future<void> _submitUsername() async {
-    if (_controller.text.trim().isEmpty) return;
-    final updated = await authService.updateUser(_controller.text.trim(), null);
+    final username = _controller.text.trim();
+    if (username.isEmpty) return;
+
+    final updated = await authService.updateUser(username, null);
+    print("Update result: $updated");
+
     if (updated) {
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (_) => const MainScreen()));
+        context,
+        MaterialPageRoute(builder: (_) => const MainScreen()),
+      );
+    } else {
+      print("Update failed");
     }
   }
 
@@ -42,11 +50,11 @@ class _UsernameSetupPageState extends State<UsernameSetupPage> {
               TextField(
                 controller: _controller,
                 style: const TextStyle(
-                  color: Colors.black, // darker text when typing
+                  color: Colors.black,
                 ),
                 decoration: const InputDecoration(
                   hintText: AppStrings.username,
-                  hintStyle: TextStyle(color: Colors.black26), // lighter hint text
+                  hintStyle: TextStyle(color: Colors.black26),
                   filled: true,
                   fillColor: Colors.white,
                   border: OutlineInputBorder(),
