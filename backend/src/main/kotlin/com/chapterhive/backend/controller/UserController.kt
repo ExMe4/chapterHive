@@ -27,8 +27,10 @@ class UserController(
         @PathVariable userId: String,
         @RequestHeader("Authorization") token: String
     ): ResponseEntity<UserResponse> {
-        val email = jwtTokenProvider.getEmailFromToken(token.substring(7))
-        val user = userRepository.findByEmail(email) ?: return ResponseEntity.status(403).build()
+        val userIdFromToken = jwtTokenProvider.getUserIdFromToken(token.substring(7))
+        if (userIdFromToken != userId) return ResponseEntity.status(403).build()
+
+        val user = userRepository.findById(userId).orElse(null) ?: return ResponseEntity.status(403).build()
 
         if (user.id != userId && user.role != User.Role.ADMIN) {
             return ResponseEntity.status(403).build()
@@ -45,8 +47,10 @@ class UserController(
         @RequestBody updatedUser: UpdateUserRequest,
         @RequestHeader("Authorization") token: String
     ): ResponseEntity<User> {
-        val email = jwtTokenProvider.getEmailFromToken(token.substring(7))
-        val user = userRepository.findByEmail(email) ?: return ResponseEntity.status(403).build()
+        val userIdFromToken = jwtTokenProvider.getUserIdFromToken(token.substring(7))
+        if (userIdFromToken != userId) return ResponseEntity.status(403).build()
+
+        val user = userRepository.findById(userId).orElse(null) ?: return ResponseEntity.status(403).build()
 
         if (user.id != userId) {
             return ResponseEntity.status(403).build()
@@ -56,6 +60,12 @@ class UserController(
             username = updatedUser.username,
             profilePicture = updatedUser.profilePicture
         )
+
+        val tokenValue = token.substring(7)
+        println("JWT token: $tokenValue")
+        println("Decoded userId from token: ${jwtTokenProvider.getEmailFromToken(tokenValue)}")
+        println("Path userId: $userId")
+
         return ResponseEntity.ok(userRepository.save(updatedProfile))
     }
 

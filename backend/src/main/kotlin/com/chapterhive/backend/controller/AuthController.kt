@@ -48,7 +48,7 @@ class AuthController(
             provider
         )
 
-        val jwt = jwtTokenProvider.generateToken(user.email, user.role.name)
+        val jwt = jwtTokenProvider.generateToken(user.id, user.role.name)
         println("Generated JWT for ${user.email}")
 
         return ResponseEntity.ok(
@@ -58,5 +58,4 @@ class AuthController(
             )
         )
     }
-
 }

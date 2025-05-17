@@ -21,11 +21,11 @@ class JwtTokenProvider(
         return Keys.hmacShaKeyFor(keyBytes)
     }
 
-    fun generateToken(email: String, role: String): String {
+    fun generateToken(userId: String, role: String): String {
         val now = Date()
 
         return Jwts.builder()
-            .setSubject(email)
+            .setSubject(userId)
             .claim("role", role)
             .setIssuedAt(now)
             .signWith(getSigningKey())
@@ -43,6 +43,10 @@ class JwtTokenProvider(
             logger.error("JWT validation failed: ${e.message}")
             false
         }
+    }
+
+    fun getUserIdFromToken(token: String): String {
+        return getClaimsFromToken(token).subject
     }
 
     fun getEmailFromToken(token: String): String {

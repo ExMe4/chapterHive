@@ -46,7 +46,14 @@ class AuthService(
     fun findOrCreateUser(id: String, email: String, username: String?, profilePicture: String?, provider: String): User {
         val existingUser = userRepository.findById(id)
         return if (existingUser.isPresent) {
-            existingUser.get()
+            val user = existingUser.get()
+            if (user.username.isNullOrEmpty() && !username.isNullOrEmpty()) {
+                val updatedUser = user.copy(username = username)
+                userRepository.save(updatedUser)
+                updatedUser
+            } else {
+                user
+            }
         } else {
             userRepository.save(
                 User(
