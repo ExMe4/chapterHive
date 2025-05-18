@@ -61,7 +61,7 @@ class AuthServiceTest {
     fun shouldReturnNullWhenTokenIsMissingFields() {
         // given
         val token = "invalidToken"
-        val jsonResponse = """{ "sub": "12345" }""" // Missing email
+        val jsonResponse = """{ "sub": "12345" }"""
 
         given(restTemplate.getForObject(anyString(), eq(String::class.java))).willReturn(jsonResponse)
 
