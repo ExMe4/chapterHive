@@ -25,7 +25,7 @@ class CustomAppBar extends StatelessWidget {
               FlexibleSpaceBar(
                 titlePadding: const EdgeInsets.only(bottom: 7.0),
                 title: Text(
-                  "BookHive",
+                  "ChapterHive",
                   style: const TextStyle(
                     fontSize: 26,
                     fontWeight: FontWeight.bold,
